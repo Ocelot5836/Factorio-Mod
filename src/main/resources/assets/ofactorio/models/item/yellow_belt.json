@@ -1,0 +1,6 @@
+{
+	"parent": "ofactorio:block/belt_strait",
+	"textures": {
+        "belt": "ofactorio:block/yellow_belt"
+	}
+}

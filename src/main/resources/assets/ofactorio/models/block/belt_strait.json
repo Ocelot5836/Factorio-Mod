@@ -1,0 +1,43 @@
+{
+    "parent": "minecraft:block/thin_block",
+    "textures": {
+        "anvil": "minecraft:block/anvil",
+		"particle": "#belt"
+    },
+    "elements": [
+        {
+            "from": [ 1, 0, 0 ], 
+            "to": [ 15, 1, 16 ], 
+            "faces": {
+                "north": { "texture": "#belt", "uv": [ 1, 0, 15, 1 ] },
+                "south": { "texture": "#belt", "uv": [ 1, 15, 15, 16 ] },
+                "up": { "texture": "#belt", "uv": [ 1, 0, 15, 16 ] },
+                "down": { "texture": "#belt", "uv": [ 1, 0, 15, 16 ] }
+            }
+        },
+        {
+            "from": [ 0, 0, 0 ], 
+            "to": [ 1, 2, 16 ], 
+            "faces": {
+                "north": { "texture": "#anvil", "uv": [ 15, 14, 16, 16 ] },
+                "east": { "texture": "#anvil", "uv": [ 0, 14, 16, 16 ] },
+                "south": { "texture": "#anvil", "uv": [ 0, 14, 1, 16 ] },
+                "west": { "texture": "#anvil", "uv": [ 0, 14, 16, 16 ] },
+                "up": { "texture": "#anvil", "uv": [ 0, 0, 1, 16 ] },
+                "down": { "texture": "#anvil", "uv": [ 0, 0, 1, 16 ] }
+            }
+        },
+        {
+            "from": [ 15, 0, 0 ], 
+            "to": [ 16, 2, 16 ], 
+            "faces": {
+                "north": { "texture": "#anvil", "uv": [ 0, 14, 1, 16 ] },
+                "east": { "texture": "#anvil", "uv": [ 0, 14, 16, 16 ] },
+                "south": { "texture": "#anvil", "uv": [ 15, 14, 16, 16 ] },
+                "west": { "texture": "#anvil", "uv": [ 0, 14, 16, 16 ] },
+                "up": { "texture": "#anvil", "uv": [ 15, 0, 16, 16 ] },
+                "down": { "texture": "#anvil", "uv": [ 15, 0, 16, 16 ] }
+            }
+        }
+    ]
+}
