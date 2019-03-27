@@ -112,19 +112,26 @@ public class BlockTransportBelt extends ModBlock
 
 	public static enum Type implements IStringSerializable
 	{
-		YELLOW("yellow"), RED("red"), BLUE("blue");
+		YELLOW("yellow", 1), RED("red", 2), BLUE("blue", 3);
 
 		private String name;
+		private int speed;
 
-		private Type(String name)
+		private Type(String name, int speed)
 		{
 			this.name = name;
+			this.speed = speed;
 		}
 
 		@Override
 		public String getName()
 		{
 			return name;
+		}
+
+		public int getSpeed()
+		{
+			return speed;
 		}
 	}
 
