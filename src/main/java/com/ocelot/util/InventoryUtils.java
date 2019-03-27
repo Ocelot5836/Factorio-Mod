@@ -18,7 +18,6 @@ import net.minecraftforge.items.IItemHandler;
  */
 public class InventoryUtils
 {
-
 	/**
 	 * Inserts the specified stack into the entire inventory.
 	 * 

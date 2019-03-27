@@ -19,20 +19,20 @@ public class ModBlocks
 {
 	private static final List<Block> BLOCKS = Lists.<Block>newArrayList();
 
-	public static final Block TRANSPORT_BELT;
+	public static final Block YELLOW_BELT;
 
 	// public static final TileEntityType<TileEntityVendingMachine> TILE_ENTITY_VENDING_MACHINE;
 
 	static
 	{
-		TRANSPORT_BELT = new BlockTransportBelt("yellow_belt", BlockTransportBelt.Type.YELLOW);
+		YELLOW_BELT = new BlockTransportBelt("yellow_belt", BlockTransportBelt.Type.YELLOW);
 
 		// TILE_ENTITY_VENDING_MACHINE = registerTileEntity("vending_machine", TileEntityVendingMachine::new);
 	}
 
 	protected static void init()
 	{
-		registerBlock(TRANSPORT_BELT, new Item.Properties().group(FactorioMod.TAB));
+		registerBlock(YELLOW_BELT, new Item.Properties().group(FactorioMod.TAB));
 	}
 
 	public static void registerBlock(Block block)
