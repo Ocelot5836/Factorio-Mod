@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import com.ocelot.FactorioMod;
 import com.ocelot.blocks.BlockTransportBelt;
 import com.ocelot.items.ModItemBlock;
+import com.ocelot.tileentity.belt.TileEntityTransportBelt;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -21,13 +22,13 @@ public class ModBlocks
 
 	public static final Block YELLOW_BELT;
 
-	// public static final TileEntityType<TileEntityVendingMachine> TILE_ENTITY_VENDING_MACHINE;
+	public static final TileEntityType<TileEntityTransportBelt> TILE_ENTITY_TRANSPORT_BELT;
 
 	static
 	{
 		YELLOW_BELT = new BlockTransportBelt("yellow_belt", BlockTransportBelt.Type.YELLOW);
 
-		// TILE_ENTITY_VENDING_MACHINE = registerTileEntity("vending_machine", TileEntityVendingMachine::new);
+		TILE_ENTITY_TRANSPORT_BELT = registerTileEntity("transport_belt", TileEntityTransportBelt::new);
 	}
 
 	protected static void init()

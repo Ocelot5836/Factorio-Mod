@@ -13,6 +13,16 @@ public class ModTileEntity extends TileEntity
 		super(tileEntityType);
 	}
 
+	protected void writeUpdateTag(NBTTagCompound nbt)
+	{
+		this.write(nbt);
+	}
+
+	protected void readUpdateTag(NBTTagCompound nbt)
+	{
+		this.read(nbt);
+	}
+
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
@@ -22,12 +32,14 @@ public class ModTileEntity extends TileEntity
 	@Override
 	public NBTTagCompound getUpdateTag()
 	{
-		return this.write(new NBTTagCompound());
+		NBTTagCompound nbt = new NBTTagCompound();
+		this.writeUpdateTag(nbt);
+		return nbt;
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
 	{
-		this.read(pkt.getNbtCompound());
+		this.readUpdateTag(pkt.getNbtCompound());
 	}
 }

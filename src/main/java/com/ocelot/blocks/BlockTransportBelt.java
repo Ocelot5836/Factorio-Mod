@@ -1,16 +1,19 @@
 package com.ocelot.blocks;
 
+import com.ocelot.tileentity.belt.TileEntityTransportBelt;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
 
 public class BlockTransportBelt extends ModBlock
 {
@@ -68,9 +71,32 @@ public class BlockTransportBelt extends ModBlock
 	}
 
 	@Override
-	public void onNeighborChange(IBlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor)
+	public void updateDiagonalNeighbors(IBlockState state, IWorld world, BlockPos pos, int flags)
 	{
-		System.out.println(state.get(SHAPE));
+		EnumFacing facing = state.get(FACING);
+		BlockPos downPos = pos.offset(facing.getOpposite()).down();
+		IBlockState downState = world.getBlockState(downPos);
+		if (downState.getBlock() instanceof BlockTransportBelt)
+		{
+			Shape shape = downState.get(SHAPE);
+			Shape newShape = this.getBeltShape(world, downPos, facing);
+			if (shape != newShape)
+			{
+				world.setBlockState(downPos, downState.with(SHAPE, newShape), 3);
+			}
+		}
+	}
+
+	@Override
+	public boolean hasTileEntity(IBlockState state)
+	{
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(IBlockState state, IBlockReader world)
+	{
+		return new TileEntityTransportBelt();
 	}
 
 	@Override
