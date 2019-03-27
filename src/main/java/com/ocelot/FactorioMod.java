@@ -7,10 +7,10 @@ import com.ocelot.gui.ClientGuiOpener;
 import com.ocelot.gui.GuiOpener;
 import com.ocelot.gui.ServerGuiOpener;
 import com.ocelot.init.ClientInit;
+import com.ocelot.init.ModBlocks;
 import com.ocelot.init.Registry;
 import com.ocelot.network.NetworkHandler;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.DistExecutor;
@@ -33,7 +33,7 @@ public class FactorioMod
 		@Override
 		public ItemStack createIcon()
 		{
-			return new ItemStack(Blocks.BRICK_STAIRS);
+			return new ItemStack(ModBlocks.YELLOW_BELT);
 		}
 	};
 
