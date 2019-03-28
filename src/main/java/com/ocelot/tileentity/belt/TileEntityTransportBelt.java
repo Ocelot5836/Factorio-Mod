@@ -5,6 +5,7 @@ import com.ocelot.init.ModBlocks;
 import com.ocelot.tileentity.ModTileEntity;
 import com.ocelot.util.ISimpleInventory;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -22,6 +23,7 @@ public class TileEntityTransportBelt extends ModTileEntity implements ITickable,
 		super(ModBlocks.TILE_ENTITY_TRANSPORT_BELT);
 		this.inventory = new TransportBeltItem[4 * 2];
 		this.clear();
+		this.setItem(0, new TransportBeltItem(new ItemStack(Blocks.DIAMOND_BLOCK)));
 	}
 
 	@Override
