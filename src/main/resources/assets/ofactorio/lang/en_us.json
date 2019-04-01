@@ -1,3 +1,5 @@
 {
-	"itemGroup.ofactorio": "Factorio"
+	"itemGroup.ofactorio": "Factorio",
+	
+	"block.ofactorio.yellow_belt": "Transport Belt"
 }
