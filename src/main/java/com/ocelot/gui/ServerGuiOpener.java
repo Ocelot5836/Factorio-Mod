@@ -44,6 +44,7 @@ public class ServerGuiOpener implements GuiOpener
 	@Nullable
 	private static Container getGuiElement(int id, EntityPlayer player, IWorld world, BlockPos pos)
 	{
+		@SuppressWarnings("unused")
 		TileEntity te = world.getTileEntity(pos);
 		return null;
 	}

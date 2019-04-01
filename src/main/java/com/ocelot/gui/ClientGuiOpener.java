@@ -29,6 +29,7 @@ public class ClientGuiOpener extends ServerGuiOpener
 	@Nullable
 	private static GuiScreen getGuiElement(int id, EntityPlayer player, IWorld world, BlockPos pos)
 	{
+		@SuppressWarnings("unused")
 		TileEntity te = world.getTileEntity(pos);
 		return null;
 	}
