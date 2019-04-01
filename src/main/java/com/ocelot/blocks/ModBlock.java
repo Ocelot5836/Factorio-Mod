@@ -16,7 +16,6 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;
@@ -140,7 +139,7 @@ public class ModBlock extends Block implements IBucketPickupHandler, ILiquidCont
 		if (state.has(WATERLOGGED))
 		{
 			IFluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
-			state = state.with(WATERLOGGED, ifluidstate.isTagged(FluidTags.WATER) && ifluidstate.getLevel() == 8);
+			state = state.with(WATERLOGGED, ifluidstate == Fluids.WATER);
 		}
 		return state;
 	}
