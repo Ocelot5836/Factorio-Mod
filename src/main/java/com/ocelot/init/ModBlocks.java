@@ -7,8 +7,10 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 import com.ocelot.FactorioMod;
+import com.ocelot.blocks.BlockBurnerMiningDrill;
 import com.ocelot.blocks.BlockOreOutcrop;
 import com.ocelot.blocks.BlockTransportBelt;
+import com.ocelot.items.ItemBurnerMiningDrill;
 import com.ocelot.items.ModItemBlock;
 import com.ocelot.tileentity.TileEntityBurnerMiningDrill;
 import com.ocelot.tileentity.TileEntityOreOutcrop;
@@ -25,8 +27,9 @@ public class ModBlocks
 	private static final List<Block> BLOCKS = Lists.<Block>newArrayList();
 
 	public static final Block IRON_ORE_OUTCROP;
-	
+
 	public static final Block YELLOW_BELT;
+	public static final Block BURNER_MINING_DRILL;
 
 	public static final TileEntityType<TileEntityTransportBelt> TILE_ENTITY_TRANSPORT_BELT;
 	public static final TileEntityType<TileEntityOreOutcrop> TILE_ENTITY_ORE_OUTCROP;
@@ -37,6 +40,7 @@ public class ModBlocks
 		IRON_ORE_OUTCROP = new BlockOreOutcrop(EnumOreType.IRON);
 
 		YELLOW_BELT = new BlockTransportBelt("yellow_belt", BlockTransportBelt.Type.YELLOW);
+		BURNER_MINING_DRILL = new BlockBurnerMiningDrill("burner_mining_drill");
 
 		TILE_ENTITY_TRANSPORT_BELT = registerTileEntity("transport_belt", TileEntityTransportBelt::new);
 		TILE_ENTITY_ORE_OUTCROP = registerTileEntity("ore_outcrop", TileEntityOreOutcrop::new);
@@ -48,6 +52,7 @@ public class ModBlocks
 		registerBlock(IRON_ORE_OUTCROP, new Item.Properties().group(FactorioMod.TAB));
 
 		registerBlock(YELLOW_BELT, new Item.Properties().group(FactorioMod.TAB));
+		registerBlock(BURNER_MINING_DRILL, new ItemBurnerMiningDrill());
 	}
 
 	public static void registerBlock(Block block)

@@ -2,35 +2,28 @@ package com.ocelot.tileentity;
 
 import javax.annotation.Nullable;
 
-import com.ocelot.blocks.BlockOreOutcrop;
 import com.ocelot.init.ModBlocks;
 import com.ocelot.util.EnumOreType;
 
-import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class TileEntityOreOutcrop extends ModTileEntity
 {
-	private int count;
+	private OreOutcrop outcrop;
 	private int spawnCount;
 
 	public TileEntityOreOutcrop()
 	{
-		this(0);
-	}
-
-	public TileEntityOreOutcrop(int spawnCount)
-	{
 		super(ModBlocks.TILE_ENTITY_ORE_OUTCROP);
-		this.count = spawnCount;
-		this.spawnCount = spawnCount;
+		this.outcrop = new OreOutcrop(null, 0);
+		this.spawnCount = 0;
 	}
 
 	@Override
 	public void read(NBTTagCompound nbt)
 	{
 		super.read(nbt);
-		this.count = nbt.getInt("count");
+		this.outcrop.deserializeNBT(nbt.getCompound("outcrop"));
 		this.spawnCount = nbt.getInt("spawnCount");
 	}
 
@@ -38,25 +31,14 @@ public class TileEntityOreOutcrop extends ModTileEntity
 	public NBTTagCompound write(NBTTagCompound nbt)
 	{
 		super.write(nbt);
-		nbt.setInt("count", this.count);
+		nbt.setTag("outcrop", this.outcrop.serializeNBT());
 		nbt.setInt("spawnCount", this.spawnCount);
 		return nbt;
 	}
 
-	@Nullable
-	public EnumOreType getOre()
+	public OreOutcrop getOutcrop()
 	{
-		Block block = this.getBlockState().getBlock();
-		if (block instanceof BlockOreOutcrop)
-		{
-			return ((BlockOreOutcrop) block).getOre();
-		}
-		return null;
-	}
-
-	public int getCount()
-	{
-		return count;
+		return outcrop;
 	}
 
 	public int getSpawnCount()
@@ -64,9 +46,19 @@ public class TileEntityOreOutcrop extends ModTileEntity
 		return spawnCount;
 	}
 
+	public void setOre(@Nullable EnumOreType ore)
+	{
+		this.outcrop.setOre(ore);
+		this.markDirty();
+		if (this.hasWorld())
+		{
+			this.getWorld().notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
+		}
+	}
+
 	public void setCount(int count)
 	{
-		this.count = count;
+		this.outcrop.setCount(count);
 		this.markDirty();
 		if (this.hasWorld())
 		{
@@ -76,8 +68,8 @@ public class TileEntityOreOutcrop extends ModTileEntity
 
 	public void setSpawnCount(int count)
 	{
+		this.outcrop.setCount(count);
 		this.spawnCount = count;
-		this.count = count;
 		this.markDirty();
 		if (this.hasWorld())
 		{

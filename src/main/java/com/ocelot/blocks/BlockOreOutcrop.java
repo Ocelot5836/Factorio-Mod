@@ -1,5 +1,9 @@
 package com.ocelot.blocks;
 
+import javax.annotation.Nullable;
+
+import com.ocelot.items.ItemBurnerMiningDrill;
+import com.ocelot.tileentity.OreOutcrop;
 import com.ocelot.tileentity.TileEntityOreOutcrop;
 import com.ocelot.util.EnumOreType;
 
@@ -32,6 +36,7 @@ public class BlockOreOutcrop extends ModBlock
 	public BlockOreOutcrop(EnumOreType ore)
 	{
 		super(ore.getName() + "_ore_outcrop", Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(3.0F, 3.0F));
+		this.setDefaultState(this.stateContainer.getBaseState().with(STONES, 1).with(WATERLOGGED, false));
 		this.ore = ore;
 	}
 
@@ -40,7 +45,8 @@ public class BlockOreOutcrop extends ModBlock
 		if (world.getTileEntity(pos) instanceof TileEntityOreOutcrop)
 		{
 			TileEntityOreOutcrop te = (TileEntityOreOutcrop) world.getTileEntity(pos);
-			return state.with(STONES, MathHelper.clamp(MathHelper.ceil((double) te.getCount() / 800.0), 1, 8));
+			te.setOre(this.ore);
+			return state.with(STONES, MathHelper.clamp(MathHelper.ceil((double) te.getOutcrop().getCount() / 800.0), 1, 8));
 		}
 		return state.with(STONES, 1);
 	}
@@ -62,19 +68,25 @@ public class BlockOreOutcrop extends ModBlock
 		{
 			TileEntityOreOutcrop te = (TileEntityOreOutcrop) world.getTileEntity(pos);
 
-			if (te.getCount() - count <= 0)
+			if (te.getOutcrop().getCount() - count <= 0)
 			{
-				int amountExtracted = te.getCount();
+				int amountExtracted = te.getOutcrop().getCount();
 				te.setCount(0);
 				return amountExtracted;
 			}
 			else
 			{
-				te.setCount(te.getCount() - count);
+				te.setCount(te.getOutcrop().getCount() - count);
 				return 0;
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public boolean isReplaceable(IBlockState state, BlockItemUseContext useContext)
+	{
+		return useContext.getItem().getItem() instanceof ItemBurnerMiningDrill;
 	}
 
 	@Override
@@ -98,7 +110,7 @@ public class BlockOreOutcrop extends ModBlock
 			{
 				world.playEvent(2001, pos, Block.getStateId(state));
 			}
-			spawnAsEntity(world, pos, new ItemStack(this.ore.getItem()));
+			spawnAsEntity(world, pos, new ItemStack(this.ore.getItemDropped()));
 			return false;
 		}
 		return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
@@ -140,8 +152,23 @@ public class BlockOreOutcrop extends ModBlock
 		builder.add(STONES, WATERLOGGED);
 	}
 
-	public EnumOreType getOre()
+	@Nullable
+	public static EnumOreType getOre(IWorld world, BlockPos pos)
 	{
-		return ore;
+		if (world.getBlockState(pos).getBlock() instanceof BlockOreOutcrop)
+		{
+			return ((BlockOreOutcrop) world.getBlockState(pos)).ore;
+		}
+		return null;
+	}
+
+	@Nullable
+	public static OreOutcrop getOreOutcrop(IWorld world, BlockPos pos)
+	{
+		if (world.getTileEntity(pos) instanceof TileEntityOreOutcrop)
+		{
+			return ((TileEntityOreOutcrop) world.getTileEntity(pos)).getOutcrop();
+		}
+		return null;
 	}
 }

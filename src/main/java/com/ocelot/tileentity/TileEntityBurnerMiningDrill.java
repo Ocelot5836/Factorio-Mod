@@ -1,10 +1,18 @@
 package com.ocelot.tileentity;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.annotation.Nullable;
+
+import com.ocelot.blocks.BlockBurnerMiningDrill;
 import com.ocelot.init.ModBlocks;
 import com.ocelot.util.MiningDrill;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITickable, MiningDrill
@@ -13,6 +21,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 	private int energy;
 	private int maxEnergy;
 	private int miningProgress;
+	private Map<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop> coveredOres;
 
 	public TileEntityBurnerMiningDrill()
 	{
@@ -21,6 +30,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 		this.energy = 0;
 		this.maxEnergy = 0;
 		this.miningProgress = 0;
+		this.coveredOres = new HashMap<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop>();
 	}
 
 	@Override
@@ -36,20 +46,42 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 	public void read(NBTTagCompound nbt)
 	{
 		super.read(nbt);
+
 		this.inventory.deserializeNBT(nbt.getCompound("inventory"));
 		this.energy = nbt.getInt("energy");
 		this.maxEnergy = nbt.getInt("maxEnergy");
 		this.miningProgress = nbt.getInt("miningProgress");
+
+		if (nbt.contains("coveredOres", Constants.NBT.TAG_COMPOUND))
+		{
+			NBTTagCompound coveredOresNbt = nbt.getCompound("coveredOres");
+			for (BlockBurnerMiningDrill.MinerDrillPart part : BlockBurnerMiningDrill.MinerDrillPart.values())
+			{
+				if (coveredOresNbt.contains(part.getName(), Constants.NBT.TAG_COMPOUND))
+				{
+					this.coveredOres.put(part, new OreOutcrop(coveredOresNbt.getCompound(part.getName())));
+				}
+			}
+		}
 	}
 
 	@Override
 	public NBTTagCompound write(NBTTagCompound nbt)
 	{
 		super.write(nbt);
+
 		nbt.setTag("inventory", this.inventory.serializeNBT());
 		nbt.setInt("energy", this.energy);
 		nbt.setInt("maxEnergy", this.maxEnergy);
 		nbt.setInt("miningProgress", this.miningProgress);
+
+		NBTTagCompound coveredOresNbt = new NBTTagCompound();
+		for (Entry<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop> entry : this.coveredOres.entrySet())
+		{
+			coveredOresNbt.setTag(entry.getKey().getName(), entry.getValue().serializeNBT());
+		}
+		nbt.setTag("coveredOres", coveredOresNbt);
+
 		return nbt;
 	}
 
@@ -100,5 +132,23 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 	public int getMaxMiningProgress()
 	{
 		return (int) Math.ceil(1f / this.getMiningSpeed());
+	}
+
+	@Nullable
+	public OreOutcrop getOutcrop(BlockBurnerMiningDrill.MinerDrillPart part)
+	{
+		return this.coveredOres.get(part);
+	}
+
+	public void setOre(BlockBurnerMiningDrill.MinerDrillPart part, @Nullable OreOutcrop ore)
+	{
+		if (ore != null)
+		{
+			this.coveredOres.put(part, ore);
+		}
+		else
+		{
+			this.coveredOres.remove(part);
+		}
 	}
 }

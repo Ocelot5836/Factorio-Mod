@@ -4,36 +4,42 @@ import java.util.Map;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
+import com.ocelot.init.ModBlocks;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.IStringSerializable;
 
 /**
  * A type of ore that can be processed by Factorio machines.
  * 
  * @author Ocelot5836
  */
-public enum EnumOreType
+public enum EnumOreType implements IStringSerializable
 {
-	IRON("iron", 1, () -> Blocks.IRON_ORE), COPPER("copper", 1, () -> Blocks.GOLD_ORE), COAL("coal", 1, () -> Items.COAL), STONE("stone", 1, () -> Blocks.STONE), URANIUM("uranium", 2, () -> Items.SLIME_BALL);
+	IRON("iron", 1, () -> Blocks.IRON_ORE, () -> ModBlocks.IRON_ORE_OUTCROP.getDefaultState()), COPPER("copper", 1, () -> Blocks.GOLD_ORE, () -> Blocks.GOLD_ORE.getDefaultState()), COAL("coal", 1, () -> Items.COAL, () -> Blocks.COAL_BLOCK.getDefaultState()), STONE("stone", 1, () -> Blocks.STONE, () -> Blocks.STONE.getDefaultState()), URANIUM("uranium", 2, () -> Items.SLIME_BALL, () -> Blocks.SLIME_BLOCK.getDefaultState());
 
 	private static final Map<String, EnumOreType> NAME_LOOKUP = Maps.<String, EnumOreType>newHashMap();
 
 	private String name;
 	private float miningTime;
 	private Supplier<IItemProvider> item;
+	private Supplier<IBlockState> state;
 
-	private EnumOreType(String name, float miningTime, Supplier<IItemProvider> item)
+	private EnumOreType(String name, float miningTime, Supplier<IItemProvider> item, Supplier<IBlockState> state)
 	{
 		this.name = name;
 		this.miningTime = miningTime;
 		this.item = item;
+		this.state = state;
 	}
 
 	/**
 	 * @return The name of this ore
 	 */
+	@Override
 	public String getName()
 	{
 		return name;
@@ -46,13 +52,21 @@ public enum EnumOreType
 	{
 		return miningTime;
 	}
-	
+
 	/**
 	 * @return The item this ore drops
 	 */
-	public IItemProvider getItem()
+	public IItemProvider getItemDropped()
 	{
 		return item.get();
+	}
+
+	/**
+	 * @return The state this ore uses when on the ground
+	 */
+	public IBlockState getState()
+	{
+		return state.get();
 	}
 
 	/**
