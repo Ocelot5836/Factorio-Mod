@@ -22,8 +22,6 @@ public class BlockBurnerMiningDrill extends ModBlock
 {
 	public static final EnumProperty<MinerDrillPart> PART = EnumProperty.<BlockBurnerMiningDrill.MinerDrillPart>create("part", MinerDrillPart.class);
 
-	
-	
 	public BlockBurnerMiningDrill(String name)
 	{
 		super(name, Blocks.IRON_BLOCK);
