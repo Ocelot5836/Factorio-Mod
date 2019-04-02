@@ -1,7 +1,7 @@
 package com.ocelot.blocks;
 
-import com.google.common.base.Supplier;
 import com.ocelot.tileentity.TileEntityOreOutcrop;
+import com.ocelot.util.EnumOreType;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -16,7 +16,6 @@ import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
@@ -28,14 +27,12 @@ public class BlockOreOutcrop extends ModBlock
 {
 	public static final IntegerProperty STONES = IntegerProperty.create("stones", 1, 8);
 
-	private final Supplier<IItemProvider> ore;
-	private final float miningTime;
+	private final EnumOreType ore;
 
-	public BlockOreOutcrop(String name, Supplier<IItemProvider> ore, int miningTime)
+	public BlockOreOutcrop(EnumOreType ore)
 	{
-		super(name, Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(3.0F, 3.0F));
+		super(ore.getName() + "_ore_outcrop", Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(3.0F, 3.0F));
 		this.ore = ore;
-		this.miningTime = miningTime;
 	}
 
 	private IBlockState updateStones(IBlockState state, IWorld world, BlockPos pos)
@@ -89,7 +86,7 @@ public class BlockOreOutcrop extends ModBlock
 	@Override
 	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, IBlockReader worldIn, BlockPos pos)
 	{
-		return 0.05f * ((1 + player.getDigSpeed(state, pos)) * 0.5f / this.miningTime);
+		return 0.05f * ((1 + player.getDigSpeed(state, pos)) * 0.5f / this.ore.getMiningTime());
 	}
 
 	@Override
@@ -101,7 +98,7 @@ public class BlockOreOutcrop extends ModBlock
 			{
 				world.playEvent(2001, pos, Block.getStateId(state));
 			}
-			spawnAsEntity(world, pos, new ItemStack(this.ore.get()));
+			spawnAsEntity(world, pos, new ItemStack(this.ore.getItem()));
 			return false;
 		}
 		return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
@@ -137,14 +134,14 @@ public class BlockOreOutcrop extends ModBlock
 		return new TileEntityOreOutcrop();
 	}
 
-	public float getMiningTime()
-	{
-		return miningTime;
-	}
-
 	@Override
 	protected void fillStateContainer(Builder<Block, IBlockState> builder)
 	{
 		builder.add(STONES, WATERLOGGED);
+	}
+
+	public EnumOreType getOre()
+	{
+		return ore;
 	}
 }

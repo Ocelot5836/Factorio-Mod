@@ -22,6 +22,8 @@ public class BlockBurnerMiningDrill extends ModBlock
 {
 	public static final EnumProperty<MinerDrillPart> PART = EnumProperty.<BlockBurnerMiningDrill.MinerDrillPart>create("part", MinerDrillPart.class);
 
+	
+	
 	public BlockBurnerMiningDrill(String name)
 	{
 		super(name, Blocks.IRON_BLOCK);
@@ -38,7 +40,7 @@ public class BlockBurnerMiningDrill extends ModBlock
 	{
 		return new TileEntityBurnerMiningDrill();
 	}
-	
+
 	@Override
 	protected void fillStateContainer(Builder<Block, IBlockState> builder)
 	{
@@ -47,25 +49,44 @@ public class BlockBurnerMiningDrill extends ModBlock
 
 	public enum MinerDrillPart implements IStringSerializable
 	{
-		TOP_LEFT("top_left", pair ->
+		TOP_LEFT_DOWN("top_left_down", pair ->
 		{
 			BlockPos pos = pair.getLeft();
 			EnumFacing direction = pair.getRight().getOpposite();
 			return pos.offset(direction).offset(direction.rotateYCCW());
-		}), TOP_RIGHT("top_right", pair ->
+		}), TOP_RIGHT_DOWN("top_right_down", pair ->
 		{
 			BlockPos pos = pair.getLeft();
 			EnumFacing direction = pair.getRight().getOpposite();
 			return pos.offset(direction);
-		}), BOTTOM_LEFT("bottom_left", pair ->
+		}), BOTTOM_LEFT_DOWN("bottom_left_down", pair ->
 		{
 			BlockPos pos = pair.getLeft();
 			EnumFacing direction = pair.getRight().getOpposite();
 			return pos.offset(direction.rotateYCCW());
-		}), BOTTOM_RIGHT("bottom_right", pair ->
+		}), BOTTOM_RIGHT_DOWN("bottom_right_down", pair ->
 		{
 			BlockPos pos = pair.getLeft();
 			return new BlockPos(pos);
+		}), TOP_LEFT_UP("top_left_up", pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			EnumFacing direction = pair.getRight().getOpposite();
+			return pos.offset(direction).offset(direction.rotateYCCW()).down();
+		}), TOP_RIGHT_UP("top_right_up", pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			EnumFacing direction = pair.getRight().getOpposite();
+			return pos.offset(direction).down();
+		}), BOTTOM_LEFT_UP("bottom_left_up", pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			EnumFacing direction = pair.getRight().getOpposite();
+			return pos.offset(direction.rotateYCCW()).down();
+		}), BOTTOM_RIGHT_UP("bottom_right_up", pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			return pos.down();
 		});
 
 		private String name;

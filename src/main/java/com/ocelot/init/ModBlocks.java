@@ -13,9 +13,9 @@ import com.ocelot.items.ModItemBlock;
 import com.ocelot.tileentity.TileEntityBurnerMiningDrill;
 import com.ocelot.tileentity.TileEntityOreOutcrop;
 import com.ocelot.tileentity.belt.TileEntityTransportBelt;
+import com.ocelot.util.EnumOreType;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -25,6 +25,7 @@ public class ModBlocks
 	private static final List<Block> BLOCKS = Lists.<Block>newArrayList();
 
 	public static final Block IRON_ORE_OUTCROP;
+	
 	public static final Block YELLOW_BELT;
 
 	public static final TileEntityType<TileEntityTransportBelt> TILE_ENTITY_TRANSPORT_BELT;
@@ -33,7 +34,7 @@ public class ModBlocks
 
 	static
 	{
-		IRON_ORE_OUTCROP = new BlockOreOutcrop("iron_ore_outcrop", () -> Blocks.DIAMOND_BLOCK, 1);
+		IRON_ORE_OUTCROP = new BlockOreOutcrop(EnumOreType.IRON);
 
 		YELLOW_BELT = new BlockTransportBelt("yellow_belt", BlockTransportBelt.Type.YELLOW);
 

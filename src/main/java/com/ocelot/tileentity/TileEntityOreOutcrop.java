@@ -1,7 +1,12 @@
 package com.ocelot.tileentity;
 
-import com.ocelot.init.ModBlocks;
+import javax.annotation.Nullable;
 
+import com.ocelot.blocks.BlockOreOutcrop;
+import com.ocelot.init.ModBlocks;
+import com.ocelot.util.EnumOreType;
+
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class TileEntityOreOutcrop extends ModTileEntity
@@ -36,6 +41,17 @@ public class TileEntityOreOutcrop extends ModTileEntity
 		nbt.setInt("count", this.count);
 		nbt.setInt("spawnCount", this.spawnCount);
 		return nbt;
+	}
+
+	@Nullable
+	public EnumOreType getOre()
+	{
+		Block block = this.getBlockState().getBlock();
+		if (block instanceof BlockOreOutcrop)
+		{
+			return ((BlockOreOutcrop) block).getOre();
+		}
+		return null;
 	}
 
 	public int getCount()
