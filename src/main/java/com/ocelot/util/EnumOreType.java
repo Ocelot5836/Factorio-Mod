@@ -5,6 +5,7 @@ import java.util.Map;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.ocelot.init.ModBlocks;
+import com.ocelot.init.ModItems;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -19,7 +20,7 @@ import net.minecraft.util.IStringSerializable;
  */
 public enum EnumOreType implements IStringSerializable
 {
-	IRON("iron", 1, () -> Blocks.IRON_ORE, () -> ModBlocks.IRON_ORE_OUTCROP.getDefaultState()), COPPER("copper", 1, () -> Blocks.GOLD_ORE, () -> Blocks.GOLD_ORE.getDefaultState()), COAL("coal", 1, () -> Items.COAL, () -> Blocks.COAL_BLOCK.getDefaultState()), STONE("stone", 1, () -> Blocks.STONE, () -> Blocks.STONE.getDefaultState()), URANIUM("uranium", 2, () -> Items.SLIME_BALL, () -> Blocks.SLIME_BLOCK.getDefaultState());
+	IRON("iron", 1, () -> ModItems.IRON_ORE, () -> ModBlocks.IRON_ORE_OUTCROP.getDefaultState()), COPPER("copper", 1, () -> Blocks.GOLD_ORE, () -> Blocks.GOLD_ORE.getDefaultState()), COAL("coal", 1, () -> Items.COAL, () -> Blocks.COAL_BLOCK.getDefaultState()), STONE("stone", 1, () -> Blocks.STONE, () -> Blocks.STONE.getDefaultState()), URANIUM("uranium", 2, () -> Items.SLIME_BALL, () -> Blocks.SLIME_BLOCK.getDefaultState());
 
 	private static final Map<String, EnumOreType> NAME_LOOKUP = Maps.<String, EnumOreType>newHashMap();
 
