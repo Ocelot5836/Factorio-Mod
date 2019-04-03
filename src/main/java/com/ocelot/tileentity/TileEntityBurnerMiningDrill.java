@@ -57,7 +57,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 			NBTTagCompound coveredOresNbt = nbt.getCompound("coveredOres");
 			for (BlockBurnerMiningDrill.MinerDrillPart part : BlockBurnerMiningDrill.MinerDrillPart.values())
 			{
-				if (coveredOresNbt.contains(part.getName(), Constants.NBT.TAG_COMPOUND))
+				if (part.isBottom() && coveredOresNbt.contains(part.getName(), Constants.NBT.TAG_COMPOUND))
 				{
 					this.coveredOres.put(part, new OreOutcrop(coveredOresNbt.getCompound(part.getName())));
 				}

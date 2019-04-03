@@ -34,35 +34,68 @@ public class BlockBurnerMiningDrill extends ModBlock
 		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH).with(PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_RIGHT_DOWN));
 	}
 
-	@Nullable
-	public IBlockState getStateForPlacement(BlockItemUseContext context)
+	private void breakPart(@Nullable IBlockState state, World world, BlockPos pos, @Nullable TileEntityBurnerMiningDrill burnerMiningDrill)
 	{
-		return super.getStateForPlacement(context).with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+		if (state == null)
+			state = world.getBlockState(pos);
+
+		if (state.getBlock() instanceof BlockBurnerMiningDrill)
+		{
+			world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
+
+			if (burnerMiningDrill != null)
+			{
+				OreOutcrop outcrop = burnerMiningDrill.getOutcrop(state.get(PART));
+				if (outcrop != null && outcrop.getOre() != null && outcrop.getCount() > 0)
+				{
+					world.setBlockState(pos, outcrop.getOre().getState(), 3);
+					if (world.getTileEntity(pos) instanceof TileEntityOreOutcrop)
+					{
+						TileEntityOreOutcrop te = (TileEntityOreOutcrop) world.getTileEntity(pos);
+						te.setOre(outcrop.getOre()).setCount(outcrop.getCount());
+					}
+				}
+			}
+		}
 	}
 
 	@Override
 	@Deprecated
 	public void onReplaced(IBlockState state, World world, BlockPos pos, IBlockState newState, boolean isMoving)
 	{
-		OreOutcrop outcrop = null;
-		BlockPos offsetPos = state.get(PART).offset(pos, state.get(FACING));
+		BlockBurnerMiningDrill.MinerDrillPart part = state.get(PART);
+		EnumFacing facing = state.get(FACING);
+		BlockPos offsetPos = part.offset(pos, facing);
+
+		TileEntityBurnerMiningDrill burnerMiningDrill = null;
 		if (world.getTileEntity(offsetPos) instanceof TileEntityBurnerMiningDrill)
 		{
-			outcrop = ((TileEntityBurnerMiningDrill) world.getTileEntity(offsetPos)).getOutcrop(state.get(PART));
+			burnerMiningDrill = (TileEntityBurnerMiningDrill) world.getTileEntity(offsetPos);
 		}
+
+		if (part != MinerDrillPart.BOTTOM_RIGHT_DOWN)
+		{
+			this.breakPart(state, world, pos, burnerMiningDrill);
+			this.breakPart(null, world, offsetPos, burnerMiningDrill);
+			return;
+		}
+
+		this.breakPart(null, world, pos.up(), burnerMiningDrill);
+		this.breakPart(null, world, pos.offset(facing.rotateY()), burnerMiningDrill);
+		this.breakPart(null, world, pos.offset(facing.rotateY()).up(), burnerMiningDrill);
+		this.breakPart(null, world, pos.offset(facing.getOpposite()), burnerMiningDrill);
+		this.breakPart(null, world, pos.offset(facing.getOpposite()).up(), burnerMiningDrill);
+		this.breakPart(null, world, pos.offset(facing.getOpposite()).offset(facing.rotateY()), burnerMiningDrill);
+		this.breakPart(null, world, pos.offset(facing.getOpposite()).offset(facing.rotateY()).up(), burnerMiningDrill);
 
 		super.onReplaced(state, world, pos, newState, isMoving);
+		this.breakPart(state, world, pos, burnerMiningDrill);
+	}
 
-		if (newState.isAir(world, offsetPos) && outcrop != null)
-		{
-			world.setBlockState(pos, outcrop.getOre().getState());
-			if (world.getTileEntity(pos) instanceof TileEntityOreOutcrop)
-			{
-				TileEntityOreOutcrop te = (TileEntityOreOutcrop) world.getTileEntity(pos);
-				te.setOre(outcrop.getOre());
-				te.setCount(outcrop.getCount());
-			}
-		}
+	@Nullable
+	public IBlockState getStateForPlacement(BlockItemUseContext context)
+	{
+		return super.getStateForPlacement(context).with(FACING, context.getPlacementHorizontalFacing().getOpposite());
 	}
 
 	@Override
@@ -107,8 +140,8 @@ public class BlockBurnerMiningDrill extends ModBlock
 		}), TOP_LEFT_UP("top_left_up", pair ->
 		{
 			BlockPos pos = pair.getLeft();
-			EnumFacing direction = pair.getRight().getOpposite();
-			return pos.offset(direction.rotateY()).down();
+			EnumFacing direction = pair.getRight();
+			return pos.offset(direction).offset(direction.rotateYCCW()).down();
 		}), TOP_RIGHT_UP("top_right_up", pair ->
 		{
 			BlockPos pos = pair.getLeft();

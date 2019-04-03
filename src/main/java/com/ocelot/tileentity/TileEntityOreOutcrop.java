@@ -10,29 +10,25 @@ import net.minecraft.nbt.NBTTagCompound;
 public class TileEntityOreOutcrop extends ModTileEntity
 {
 	private OreOutcrop outcrop;
-	private int spawnCount;
 
 	public TileEntityOreOutcrop()
 	{
 		super(ModBlocks.TILE_ENTITY_ORE_OUTCROP);
-		this.outcrop = new OreOutcrop(null, 0);
-		this.spawnCount = 0;
+		this.outcrop = new OreOutcrop(null, 15);
 	}
 
 	@Override
 	public void read(NBTTagCompound nbt)
 	{
 		super.read(nbt);
-		this.outcrop.deserializeNBT(nbt.getCompound("outcrop"));
-		this.spawnCount = nbt.getInt("spawnCount");
+		this.outcrop.deserializeNBT(nbt);
 	}
 
 	@Override
 	public NBTTagCompound write(NBTTagCompound nbt)
 	{
 		super.write(nbt);
-		nbt.setTag("outcrop", this.outcrop.serializeNBT());
-		nbt.setInt("spawnCount", this.spawnCount);
+		nbt.merge(this.outcrop.serializeNBT());
 		return nbt;
 	}
 
@@ -41,12 +37,7 @@ public class TileEntityOreOutcrop extends ModTileEntity
 		return outcrop;
 	}
 
-	public int getSpawnCount()
-	{
-		return spawnCount;
-	}
-
-	public void setOre(@Nullable EnumOreType ore)
+	public TileEntityOreOutcrop setOre(@Nullable EnumOreType ore)
 	{
 		this.outcrop.setOre(ore);
 		this.markDirty();
@@ -54,9 +45,10 @@ public class TileEntityOreOutcrop extends ModTileEntity
 		{
 			this.getWorld().notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
 		}
+		return this;
 	}
 
-	public void setCount(int count)
+	public TileEntityOreOutcrop setCount(int count)
 	{
 		this.outcrop.setCount(count);
 		this.markDirty();
@@ -64,16 +56,6 @@ public class TileEntityOreOutcrop extends ModTileEntity
 		{
 			this.getWorld().notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
 		}
-	}
-
-	public void setSpawnCount(int count)
-	{
-		this.outcrop.setCount(count);
-		this.spawnCount = count;
-		this.markDirty();
-		if (this.hasWorld())
-		{
-			this.getWorld().notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
-		}
+		return this;
 	}
 }

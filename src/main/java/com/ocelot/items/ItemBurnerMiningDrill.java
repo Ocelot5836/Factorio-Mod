@@ -21,9 +21,14 @@ public class ItemBurnerMiningDrill extends ModItemBlock
 		super(ModBlocks.BURNER_MINING_DRILL, new Item.Properties().group(FactorioMod.TAB));
 	}
 
+	private boolean hasOreAt(IWorld world, BlockPos pos)
+	{
+		return BlockOreOutcrop.getOreOutcrop(world, pos) != null;
+	}
+
 	private boolean canPlaceAt(BlockItemUseContext context, IWorld world, BlockPos pos, IBlockState state)
 	{
-		return world.getBlockState(pos).isReplaceable(new BlockItemUseContext(context.getWorld(), context.getPlayer(), context.getItem(), pos, context.getFace(), context.getHitX(), context.getHitY(), context.getHitZ())) && world.checkNoEntityCollision(state, pos);
+		return ((state.get(BlockBurnerMiningDrill.PART).isTop() ? !(world.getBlockState(pos).getBlock() instanceof BlockOreOutcrop) : true) && world.getBlockState(pos).isReplaceable(new BlockItemUseContext(context.getWorld(), context.getPlayer(), context.getItem(), pos, context.getFace(), context.getHitX(), context.getHitY(), context.getHitZ()))) && world.checkNoEntityCollision(state, pos);
 	}
 
 	private boolean placePart(IWorld world, BlockPos pos, IBlockState state)
@@ -35,7 +40,6 @@ public class ItemBurnerMiningDrill extends ModItemBlock
 			if (part.isBottom() && ore != null)
 			{
 				BlockPos offsetPos = part.offset(pos, state.get(BlockBurnerMiningDrill.FACING));
-				System.out.println(ore.getOre() + "," + offsetPos);
 				if (world.getTileEntity(offsetPos) instanceof TileEntityBurnerMiningDrill)
 				{
 					((TileEntityBurnerMiningDrill) world.getTileEntity(offsetPos)).setOre(part, ore);
@@ -52,7 +56,11 @@ public class ItemBurnerMiningDrill extends ModItemBlock
 		IWorld world = context.getWorld();
 		BlockPos pos = context.getPos();
 		EnumFacing direction = context.getPlacementHorizontalFacing();
-		return this.canPlaceAt(context, world, pos, state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_RIGHT_DOWN)) && this.canPlaceAt(context, world, pos.up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_RIGHT_UP)) && this.canPlaceAt(context, world, pos.offset(direction.rotateYCCW()), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_LEFT_DOWN)) && this.canPlaceAt(context, world, pos.offset(direction.rotateYCCW()).up(), state) && this.canPlaceAt(context, world, pos.offset(direction), state) && this.canPlaceAt(context, world, pos.offset(direction).up(), state) && this.canPlaceAt(context, world, pos.offset(direction).offset(direction.rotateYCCW()), state) && this.canPlaceAt(context, world, pos.offset(direction).offset(direction.rotateYCCW()).up(), state);
+
+		if (!(this.hasOreAt(world, pos) || this.hasOreAt(world, pos.offset(direction.rotateYCCW())) || this.hasOreAt(world, pos.offset(direction)) || this.hasOreAt(world, pos.offset(direction.rotateYCCW()).offset(direction))))
+			return false;
+
+		return this.canPlaceAt(context, world, pos, state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_RIGHT_DOWN)) && this.canPlaceAt(context, world, pos.up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_RIGHT_UP)) && this.canPlaceAt(context, world, pos.offset(direction.rotateYCCW()), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_LEFT_DOWN)) && this.canPlaceAt(context, world, pos.offset(direction.rotateYCCW()).up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_LEFT_UP)) && this.canPlaceAt(context, world, pos.offset(direction), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_RIGHT_DOWN)) && this.canPlaceAt(context, world, pos.offset(direction).up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_RIGHT_UP)) && this.canPlaceAt(context, world, pos.offset(direction).offset(direction.rotateYCCW()), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_LEFT_DOWN)) && this.canPlaceAt(context, world, pos.offset(direction).offset(direction.rotateYCCW()).up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_LEFT_UP));
 	}
 
 	@Override
