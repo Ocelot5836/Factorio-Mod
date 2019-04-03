@@ -79,14 +79,10 @@ public class BlockBurnerMiningDrill extends ModBlock
 			this.breakPart(null, world, offsetPos, burnerMiningDrill);
 			return;
 		}
-
-		this.breakPart(null, world, pos.up(), burnerMiningDrill);
-		this.breakPart(null, world, pos.offset(facing.rotateY()), burnerMiningDrill);
-		this.breakPart(null, world, pos.offset(facing.rotateY()).up(), burnerMiningDrill);
-		this.breakPart(null, world, pos.offset(facing.getOpposite()), burnerMiningDrill);
-		this.breakPart(null, world, pos.offset(facing.getOpposite()).up(), burnerMiningDrill);
-		this.breakPart(null, world, pos.offset(facing.getOpposite()).offset(facing.rotateY()), burnerMiningDrill);
-		this.breakPart(null, world, pos.offset(facing.getOpposite()).offset(facing.rotateY()).up(), burnerMiningDrill);
+		
+		for(BlockBurnerMiningDrill.MinerDrillPart p : BlockBurnerMiningDrill.MinerDrillPart.values()) {
+			this.breakPart(null, world, p.offsetOrigin(pos, facing), burnerMiningDrill);
+		}
 
 		super.onReplaced(state, world, pos, newState, isMoving);
 		this.breakPart(state, world, pos, burnerMiningDrill);
@@ -118,53 +114,107 @@ public class BlockBurnerMiningDrill extends ModBlock
 
 	public enum MinerDrillPart implements IStringSerializable
 	{
+		BOTTOM_RIGHT_DOWN("bottom_right_down", pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			return new BlockPos(pos);
+		}, pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			return new BlockPos(pos);
+		}),
+
+		BOTTOM_LEFT_DOWN("bottom_left_down", pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			EnumFacing direction = pair.getRight().getOpposite();
+			return pos.offset(direction.rotateY());
+		}, pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			EnumFacing direction = pair.getRight().getOpposite();
+			return pos.offset(direction.rotateYCCW());
+		}),
+
+		TOP_RIGHT_DOWN("top_right_down", pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			EnumFacing direction = pair.getRight();
+			return pos.offset(direction);
+		}, pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			EnumFacing direction = pair.getRight();
+			return pos.offset(direction.getOpposite());
+		}),
+		
 		TOP_LEFT_DOWN("top_left_down", pair ->
 		{
 			BlockPos pos = pair.getLeft();
 			EnumFacing direction = pair.getRight();
 			return pos.offset(direction).offset(direction.rotateYCCW());
-		}), TOP_RIGHT_DOWN("top_right_down", pair ->
+		}, pair ->
 		{
 			BlockPos pos = pair.getLeft();
 			EnumFacing direction = pair.getRight();
-			return pos.offset(direction);
-		}), BOTTOM_LEFT_DOWN("bottom_left_down", pair ->
+			return pos.offset(direction.getOpposite()).offset(direction.rotateY());
+		}),
+
+		BOTTOM_RIGHT_UP("bottom_right_up", pair ->
 		{
 			BlockPos pos = pair.getLeft();
-			EnumFacing direction = pair.getRight().getOpposite();
-			return pos.offset(direction.rotateY());
-		}), BOTTOM_RIGHT_DOWN("bottom_right_down", pair ->
+			return pos.down();
+		}, pair ->
 		{
 			BlockPos pos = pair.getLeft();
-			return new BlockPos(pos);
-		}), TOP_LEFT_UP("top_left_up", pair ->
-		{
-			BlockPos pos = pair.getLeft();
-			EnumFacing direction = pair.getRight();
-			return pos.offset(direction).offset(direction.rotateYCCW()).down();
-		}), TOP_RIGHT_UP("top_right_up", pair ->
-		{
-			BlockPos pos = pair.getLeft();
-			EnumFacing direction = pair.getRight();
-			return pos.offset(direction).down();
-		}), BOTTOM_LEFT_UP("bottom_left_up", pair ->
+			return pos.up();
+		}),
+
+		BOTTOM_LEFT_UP("bottom_left_up", pair ->
 		{
 			BlockPos pos = pair.getLeft();
 			EnumFacing direction = pair.getRight().getOpposite();
 			return pos.offset(direction.rotateY()).down();
-		}), BOTTOM_RIGHT_UP("bottom_right_up", pair ->
+		}, pair ->
 		{
 			BlockPos pos = pair.getLeft();
-			return pos.down();
+			EnumFacing direction = pair.getRight().getOpposite();
+			return pos.offset(direction.rotateYCCW()).up();
+		}),
+
+		TOP_RIGHT_UP("top_right_up", pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			EnumFacing direction = pair.getRight();
+			return pos.offset(direction).down();
+		}, pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			EnumFacing direction = pair.getRight();
+			return pos.offset(direction.getOpposite()).up();
+		}),
+
+		TOP_LEFT_UP("top_left_up", pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			EnumFacing direction = pair.getRight();
+			return pos.offset(direction).offset(direction.rotateYCCW()).down();
+		}, pair ->
+		{
+			BlockPos pos = pair.getLeft();
+			EnumFacing direction = pair.getRight();
+			return pos.offset(direction.getOpposite()).offset(direction.rotateY()).up();
 		});
 
 		private String name;
-		private Function<Pair<BlockPos, EnumFacing>, BlockPos> offset;
+		private Function<Pair<BlockPos, EnumFacing>, BlockPos> originOffset;
+		private Function<Pair<BlockPos, EnumFacing>, BlockPos> currentOffset;
 
-		private MinerDrillPart(String name, Function<Pair<BlockPos, EnumFacing>, BlockPos> offset)
+		private MinerDrillPart(String name, Function<Pair<BlockPos, EnumFacing>, BlockPos> offset, Function<Pair<BlockPos, EnumFacing>, BlockPos> currentOffset)
 		{
 			this.name = name;
-			this.offset = offset;
+			this.originOffset = offset;
+			this.currentOffset = currentOffset;
 		}
 
 		/**
@@ -178,7 +228,21 @@ public class BlockBurnerMiningDrill extends ModBlock
 		 */
 		public BlockPos offset(BlockPos pos, EnumFacing direction)
 		{
-			return this.offset.apply(new ImmutablePair<BlockPos, EnumFacing>(pos, direction));
+			return this.originOffset.apply(new ImmutablePair<BlockPos, EnumFacing>(pos, direction));
+		}
+
+		/**
+		 * Offsets the position from the origin to this position.
+		 * 
+		 * @param pos
+		 *            The position of the pos
+		 * @param direction
+		 *            The direction to go, eg block facing
+		 * @return The new offset position
+		 */
+		public BlockPos offsetOrigin(BlockPos pos, EnumFacing direction)
+		{
+			return this.currentOffset.apply(new ImmutablePair<BlockPos, EnumFacing>(pos, direction));
 		}
 
 		@Override

@@ -78,7 +78,11 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 		NBTTagCompound coveredOresNbt = new NBTTagCompound();
 		for (Entry<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop> entry : this.coveredOres.entrySet())
 		{
-			coveredOresNbt.setTag(entry.getKey().getName(), entry.getValue().serializeNBT());
+			BlockBurnerMiningDrill.MinerDrillPart part = entry.getKey();
+			if (part.isBottom())
+			{
+				coveredOresNbt.setTag(part.getName(), entry.getValue().serializeNBT());
+			}
 		}
 		nbt.setTag("coveredOres", coveredOresNbt);
 
@@ -137,18 +141,21 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 	@Nullable
 	public OreOutcrop getOutcrop(BlockBurnerMiningDrill.MinerDrillPart part)
 	{
-		return this.coveredOres.get(part);
+		return part.isBottom() ? this.coveredOres.get(part) : null;
 	}
 
 	public void setOre(BlockBurnerMiningDrill.MinerDrillPart part, @Nullable OreOutcrop ore)
 	{
-		if (ore != null)
+		if (part.isBottom())
 		{
-			this.coveredOres.put(part, ore);
-		}
-		else
-		{
-			this.coveredOres.remove(part);
+			if (ore != null)
+			{
+				this.coveredOres.put(part, ore);
+			}
+			else
+			{
+				this.coveredOres.remove(part);
+			}
 		}
 	}
 }

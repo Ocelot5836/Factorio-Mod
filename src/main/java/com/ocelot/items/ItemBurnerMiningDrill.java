@@ -34,7 +34,7 @@ public class ItemBurnerMiningDrill extends ModItemBlock
 	private boolean placePart(IWorld world, BlockPos pos, IBlockState state)
 	{
 		OreOutcrop ore = BlockOreOutcrop.getOreOutcrop(world, pos);
-		if (world.setBlockState(pos, state, 11))
+		if (world.setBlockState(pos, state, 3))
 		{
 			BlockBurnerMiningDrill.MinerDrillPart part = state.get(BlockBurnerMiningDrill.PART);
 			if (part.isBottom() && ore != null)
@@ -57,10 +57,29 @@ public class ItemBurnerMiningDrill extends ModItemBlock
 		BlockPos pos = context.getPos();
 		EnumFacing direction = context.getPlacementHorizontalFacing();
 
-		if (!(this.hasOreAt(world, pos) || this.hasOreAt(world, pos.offset(direction.rotateYCCW())) || this.hasOreAt(world, pos.offset(direction)) || this.hasOreAt(world, pos.offset(direction.rotateYCCW()).offset(direction))))
-			return false;
+		boolean hasOre = false;
+		for (BlockBurnerMiningDrill.MinerDrillPart p : BlockBurnerMiningDrill.MinerDrillPart.values())
+		{
+			if (p.isBottom() && this.hasOreAt(world, p.offsetOrigin(pos, direction.getOpposite())))
+			{
+				hasOre = true;
+				break;
+			}
+		}
 
-		return this.canPlaceAt(context, world, pos, state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_RIGHT_DOWN)) && this.canPlaceAt(context, world, pos.up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_RIGHT_UP)) && this.canPlaceAt(context, world, pos.offset(direction.rotateYCCW()), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_LEFT_DOWN)) && this.canPlaceAt(context, world, pos.offset(direction.rotateYCCW()).up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_LEFT_UP)) && this.canPlaceAt(context, world, pos.offset(direction), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_RIGHT_DOWN)) && this.canPlaceAt(context, world, pos.offset(direction).up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_RIGHT_UP)) && this.canPlaceAt(context, world, pos.offset(direction).offset(direction.rotateYCCW()), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_LEFT_DOWN)) && this.canPlaceAt(context, world, pos.offset(direction).offset(direction.rotateYCCW()).up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_LEFT_UP));
+		if (!hasOre)
+		{
+			return false;
+		}
+
+		for (BlockBurnerMiningDrill.MinerDrillPart p : BlockBurnerMiningDrill.MinerDrillPart.values())
+		{
+			if (!this.canPlaceAt(context, world, p.offsetOrigin(pos, direction.getOpposite()), state.with(BlockBurnerMiningDrill.PART, p)))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -69,6 +88,14 @@ public class ItemBurnerMiningDrill extends ModItemBlock
 		IWorld world = context.getWorld();
 		BlockPos pos = context.getPos();
 		EnumFacing direction = context.getPlacementHorizontalFacing();
-		return this.placePart(world, pos, state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_RIGHT_DOWN)) && this.placePart(world, pos.up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_RIGHT_UP)) && this.placePart(world, pos.offset(direction.rotateYCCW()), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_LEFT_DOWN)) && this.placePart(world, pos.offset(direction.rotateYCCW()).up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.BOTTOM_LEFT_UP)) && this.placePart(world, pos.offset(direction), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_RIGHT_DOWN)) && this.placePart(world, pos.offset(direction).up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_RIGHT_UP)) && this.placePart(world, pos.offset(direction).offset(direction.rotateYCCW()), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_LEFT_DOWN)) && this.placePart(world, pos.offset(direction).offset(direction.rotateYCCW()).up(), state.with(BlockBurnerMiningDrill.PART, BlockBurnerMiningDrill.MinerDrillPart.TOP_LEFT_UP));
+		
+		for (BlockBurnerMiningDrill.MinerDrillPart p : BlockBurnerMiningDrill.MinerDrillPart.values())
+		{
+			if (!this.placePart(world, p.offsetOrigin(pos, direction.getOpposite()), state.with(BlockBurnerMiningDrill.PART, p)))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 }
