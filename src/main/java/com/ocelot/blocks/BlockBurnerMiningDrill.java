@@ -273,13 +273,13 @@ public class BlockBurnerMiningDrill extends ModBlock implements BlockFactorioInv
 	}
 
 	@Override
-	public boolean canInsert(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory)
+	public boolean canReceive(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory)
 	{
 		return false;
 	}
 
 	@Override
-	public ItemStack insert(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory)
+	public ItemStack receive(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory)
 	{
 		return stack;
 	}

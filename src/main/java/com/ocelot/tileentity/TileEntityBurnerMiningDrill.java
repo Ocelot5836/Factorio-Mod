@@ -50,9 +50,11 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 				super.onContentsChanged(slot);
 			}
 		};
+		this.inventory.setStackInSlot(0, new ItemStack(Items.COAL, 64));
 		this.miningProgress = 0;
 		this.joules = 0;
 		this.coveredOres = new ConcurrentHashMap<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop>();
+		this.joulesMap = FactorioFuels.getJouleAmounts();
 	}
 
 	private boolean canOutput()
@@ -106,13 +108,16 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 			{
 				if (this.joules < this.getEnergyConsumption() / 20)
 				{
-					ItemStack stack = this.inventory.getStackInSlot(0);
-					if (!stack.isEmpty() && this.joulesMap.get(stack.getItem()) > 0)
+					if (this.joulesMap != null)
 					{
-						this.inventory.extractItem(0, 1, false);
-						this.joules = this.joulesMap.get(stack.getItem());
-						this.markDirty();
-						this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+						ItemStack stack = this.inventory.getStackInSlot(0);
+						if (!stack.isEmpty() && this.joulesMap.get(stack.getItem()) > 0)
+						{
+							this.inventory.extractItem(0, 1, false);
+							this.joules = this.joulesMap.get(stack.getItem());
+							this.markDirty();
+							this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+						}
 					}
 				}
 				else
@@ -143,7 +148,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 							this.markDirty();
 							this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
 						}
-						else
+						else if (this.canOutput())
 						{
 							outcrop.setCount(outcrop.getCount() - 1);
 							if (outcrop.getCount() <= 0)
@@ -151,12 +156,13 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 								this.coveredOres.remove(part);
 							}
 
-							if (this.canOutput())
-							{
-								this.output(outcrop.getOre(), 1);
-								this.miningProgress = 0;
-							}
+							this.output(outcrop.getOre(), 1);
+							this.miningProgress = 0;
 						}
+					}
+					else
+					{
+						this.coveredOres.remove(part);
 					}
 				}
 			}

@@ -22,7 +22,7 @@ public interface BlockFactorioInventory
 	 *            The other inventory attempting to insert
 	 * @return Whether or not the specified stack can be inserted
 	 */
-	boolean canInsert(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory);
+	boolean canReceive(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory);
 
 	/**
 	 * Inserts the specified stack into this inventory via the provided face.
@@ -39,5 +39,5 @@ public interface BlockFactorioInventory
 	 *            The face the machine is attempting to insert from
 	 * @return The items that could not be inserted
 	 */
-	ItemStack insert(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory);
+	ItemStack receive(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory);
 }
