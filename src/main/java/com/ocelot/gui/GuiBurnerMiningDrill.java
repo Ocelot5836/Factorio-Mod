@@ -5,6 +5,7 @@ import com.ocelot.blocks.BlockBurnerMiningDrill.MinerDrillPart;
 import com.ocelot.gui.container.ContainerBurnerMiningDrill;
 import com.ocelot.tileentity.OreOutcrop;
 import com.ocelot.tileentity.TileEntityBurnerMiningDrill;
+import com.ocelot.util.EnergyUtils;
 import com.ocelot.util.EnumOreType;
 
 import net.minecraft.client.Minecraft;
@@ -45,6 +46,16 @@ public class GuiBurnerMiningDrill extends GuiContainer
         {
             this.renderToolTip(this.outcropCache, mouseX, mouseY);
         }
+
+        if (!this.outcropCache.isEmpty() && mouseX - this.guiLeft > 38 && mouseX - this.guiLeft <= 38 + 92 && mouseY - this.guiTop > 21 && mouseY - this.guiTop <= 21 + 4)
+        {
+            this.drawHoveringText(EnergyUtils.joulesToString(this.te.getJoules()), mouseX, mouseY);
+        }
+
+        if (!this.outcropCache.isEmpty() && mouseX - this.guiLeft > 18 && mouseX - this.guiLeft <= 18 + 112 && mouseY - this.guiTop > 43 && mouseY - this.guiTop <= 43 + 4)
+        {
+            this.drawHoveringText(Integer.toString((int)((double) this.te.getMiningProgress() / (double) (this.te.getMaxMiningProgress() * 20.0) * 100.0)) + "%", mouseX, mouseY);
+        }
     }
 
     @Override
@@ -62,7 +73,7 @@ public class GuiBurnerMiningDrill extends GuiContainer
 
         this.mc.getTextureManager().bindTexture(TEXTURE);
         drawScaledCustomSizeModalRect(40, 23, 176, 0, 1, 2, (int) ((double) this.te.getJoules() / (double) (this.te.getMaxJoules()) * 90.0), 2, 256, 256);
-        drawScaledCustomSizeModalRect(20, 45, 176, 0, 1, 2, (int) ((double) this.te.getMiningProgress() / (double) (this.te.getMaxMiningProgress() * 20) * 110.0), 2, 256, 256);
+        drawScaledCustomSizeModalRect(20, 45, 176, 0, 1, 2, (int) ((double) this.te.getMiningProgress() / (double) (this.te.getMaxMiningProgress() * 20.0) * 110.0), 2, 256, 256);
 
         EnumOreType ore = null;
         for (int i = 0; i < MinerDrillPart.values().length; i++)
