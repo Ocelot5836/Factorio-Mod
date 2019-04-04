@@ -25,7 +25,7 @@ public interface MiningDrill
 	float getMiningSpeed();
 
 	/**
-	 * @return The amount of pollution generated per second while running
+	 * @return The amount of pollution being currently generated per second
 	 */
 	int getPollution();
 }

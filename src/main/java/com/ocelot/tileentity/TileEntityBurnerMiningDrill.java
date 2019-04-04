@@ -1,34 +1,100 @@
 package com.ocelot.tileentity;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nullable;
 
 import com.ocelot.blocks.BlockBurnerMiningDrill;
+import com.ocelot.blocks.BlockBurnerMiningDrill.MinerDrillPart;
 import com.ocelot.init.ModTileEntities;
+import com.ocelot.recipe.FactorioFuels;
+import com.ocelot.util.EnumOreType;
+import com.ocelot.util.ISimpleInventory;
+import com.ocelot.util.InventoryUtils;
 import com.ocelot.util.MiningDrill;
 
+import net.minecraft.init.Items;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITickable, MiningDrill
+public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITickable, MiningDrill, ISimpleInventory
 {
 	private ItemStackHandler inventory;
-	private int joules;
 	private int miningProgress;
+	private float joules;
 	private Map<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop> coveredOres;
+
+	private Map<Item, Float> joulesMap;
 
 	public TileEntityBurnerMiningDrill()
 	{
 		super(ModTileEntities.TILE_ENTITY_BURNER_MINING_DRILL);
-		this.inventory = new ItemStackHandler(1);
-		this.joules = 0;
+		this.inventory = new ItemStackHandler(1)
+		{
+			@Override
+			protected void onContentsChanged(int slot)
+			{
+				joulesMap = FactorioFuels.getJouleAmounts();
+				super.onContentsChanged(slot);
+			}
+		};
 		this.miningProgress = 0;
-		this.coveredOres = new HashMap<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop>();
+		this.joules = 0;
+		this.coveredOres = new ConcurrentHashMap<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop>();
+	}
+
+	private boolean canOutput()
+	{
+		EnumFacing facing = this.getBlockState().get(BlockBurnerMiningDrill.FACING);
+		World world = this.getWorld();
+		BlockPos pos = this.getPos();
+		BlockPos containerPos = pos.offset(facing);
+
+		if (world.getTileEntity(containerPos) != null)
+		{
+			IItemHandler container = world.getTileEntity(containerPos).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
+			if (container != null)
+			{
+				return !InventoryUtils.isFull(container);
+			}
+		}
+
+		return true;
+	}
+
+	private void output(EnumOreType ore, int amount)
+	{
+		if (ore == null)
+			return;
+
+		EnumFacing facing = this.getBlockState().get(BlockBurnerMiningDrill.FACING);
+		World world = this.getWorld();
+		BlockPos pos = this.getPos();
+		BlockPos containerPos = pos.offset(facing);
+
+		if (world.getTileEntity(containerPos) != null)
+		{
+			IItemHandler container = world.getTileEntity(containerPos).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
+			if (container != null && !InventoryUtils.isFull(container))
+			{
+				InventoryUtils.insertStack(container, new ItemStack(ore.getItemDropped(), amount), false);
+				return;
+			}
+		}
+
+		InventoryHelper.spawnItemStack(world, containerPos.getX(), containerPos.getY(), containerPos.getZ(), new ItemStack(ore.getItemDropped(), amount));
 	}
 
 	@Override
@@ -36,7 +102,64 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 	{
 		if (this.hasWorld() && !this.getWorld().isRemote())
 		{
+			if (!this.coveredOres.isEmpty())
+			{
+				if (this.joules < this.getEnergyConsumption() / 20)
+				{
+					ItemStack stack = this.inventory.getStackInSlot(0);
+					if (!stack.isEmpty() && this.joulesMap.get(stack.getItem()) > 0)
+					{
+						this.inventory.extractItem(0, 1, false);
+						this.joules = this.joulesMap.get(stack.getItem());
+						this.markDirty();
+						this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+					}
+				}
+				else
+				{
+					MinerDrillPart part = null;
+					OreOutcrop outcrop = null;
 
+					int index = this.getWorld().rand.nextInt(this.coveredOres.size());
+					int i = 0;
+					for (MinerDrillPart key : this.coveredOres.keySet())
+					{
+						if (index == i)
+						{
+							part = key;
+							outcrop = this.coveredOres.get(key);
+							break;
+						}
+						i++;
+					}
+
+					EnumOreType ore = outcrop.getOre();
+					if (ore != null && outcrop.getCount() > 0)
+					{
+						if (this.miningProgress < this.getMaxMiningProgress() * 20)
+						{
+							this.miningProgress++;
+							this.joules -= this.getEnergyConsumption() / 20;
+							this.markDirty();
+							this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+						}
+						else
+						{
+							outcrop.setCount(outcrop.getCount() - 1);
+							if (outcrop.getCount() <= 0)
+							{
+								this.coveredOres.remove(part);
+							}
+
+							if (this.canOutput())
+							{
+								this.output(outcrop.getOre(), 1);
+								this.miningProgress = 0;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -46,7 +169,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 		super.read(nbt);
 
 		this.inventory.deserializeNBT(nbt.getCompound("inventory"));
-		this.joules = nbt.getInt("energy");
+		this.joules = nbt.getFloat("energy");
 		this.miningProgress = nbt.getInt("miningProgress");
 
 		if (nbt.contains("coveredOres", Constants.NBT.TAG_COMPOUND))
@@ -68,7 +191,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 		super.write(nbt);
 
 		nbt.setTag("inventory", this.inventory.serializeNBT());
-		nbt.setInt("energy", this.joules);
+		nbt.setFloat("energy", this.joules);
 		nbt.setInt("miningProgress", this.miningProgress);
 
 		NBTTagCompound coveredOresNbt = new NBTTagCompound();
@@ -109,12 +232,24 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 		return 12;
 	}
 
-	public ItemStackHandler getInventory()
+	@Override
+	public int getSlots()
+	{
+		return this.inventory.getSlots();
+	}
+
+	@Override
+	public ItemStack getStackInSlot(int slot)
+	{
+		return this.inventory.getStackInSlot(slot);
+	}
+
+	public IItemHandler getInventory()
 	{
 		return inventory;
 	}
 
-	public int getJoules()
+	public float getJoules()
 	{
 		return joules;
 	}

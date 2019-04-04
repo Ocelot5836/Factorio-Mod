@@ -13,8 +13,13 @@ public class TileEntityOreOutcrop extends ModTileEntity
 
 	public TileEntityOreOutcrop()
 	{
+		this(null);
+	}
+
+	public TileEntityOreOutcrop(EnumOreType ore)
+	{
 		super(ModTileEntities.TILE_ENTITY_ORE_OUTCROP);
-		this.outcrop = new OreOutcrop(null, 15);
+		this.outcrop = new OreOutcrop(ore, 1000);
 	}
 
 	@Override

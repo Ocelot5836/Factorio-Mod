@@ -143,7 +143,7 @@ public class BlockOreOutcrop extends ModBlock
 	@Override
 	public TileEntity createTileEntity(IBlockState state, IBlockReader world)
 	{
-		return new TileEntityOreOutcrop();
+		return new TileEntityOreOutcrop(this.ore);
 	}
 
 	@Override

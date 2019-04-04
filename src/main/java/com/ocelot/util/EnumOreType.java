@@ -2,6 +2,8 @@ package com.ocelot.util;
 
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.ocelot.init.ModBlocks;
@@ -75,11 +77,12 @@ public enum EnumOreType implements IStringSerializable
 	 * 
 	 * @param name
 	 *            The name to get an ore by
-	 * @return The ore found by that name or {@link #IRON} if one could not be found
+	 * @return The ore found by that name or null if one could not be found
 	 */
+	@Nullable
 	public static EnumOreType byName(String name)
 	{
-		return NAME_LOOKUP.getOrDefault(name, IRON);
+		return NAME_LOOKUP.get(name);
 	}
 
 	static

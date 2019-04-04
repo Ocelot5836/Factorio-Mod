@@ -10,11 +10,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.ocelot.tileentity.OreOutcrop;
 import com.ocelot.tileentity.TileEntityBurnerMiningDrill;
 import com.ocelot.tileentity.TileEntityOreOutcrop;
+import com.ocelot.util.BlockFactorioInventory;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
@@ -22,9 +24,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-public class BlockBurnerMiningDrill extends ModBlock
+public class BlockBurnerMiningDrill extends ModBlock implements BlockFactorioInventory
 {
 	public static final EnumProperty<MinerDrillPart> PART = EnumProperty.<BlockBurnerMiningDrill.MinerDrillPart>create("part", MinerDrillPart.class);
 
@@ -79,8 +82,9 @@ public class BlockBurnerMiningDrill extends ModBlock
 			this.breakPart(null, world, offsetPos, burnerMiningDrill);
 			return;
 		}
-		
-		for(BlockBurnerMiningDrill.MinerDrillPart p : BlockBurnerMiningDrill.MinerDrillPart.values()) {
+
+		for (BlockBurnerMiningDrill.MinerDrillPart p : BlockBurnerMiningDrill.MinerDrillPart.values())
+		{
 			this.breakPart(null, world, p.offsetOrigin(pos, facing), burnerMiningDrill);
 		}
 
@@ -147,7 +151,7 @@ public class BlockBurnerMiningDrill extends ModBlock
 			EnumFacing direction = pair.getRight();
 			return pos.offset(direction.getOpposite());
 		}),
-		
+
 		TOP_LEFT_DOWN("top_left_down", pair ->
 		{
 			BlockPos pos = pair.getLeft();
@@ -266,5 +270,17 @@ public class BlockBurnerMiningDrill extends ModBlock
 		{
 			return !this.isBottom();
 		}
+	}
+
+	@Override
+	public boolean canInsert(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory)
+	{
+		return false;
+	}
+
+	@Override
+	public ItemStack insert(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory)
+	{
+		return stack;
 	}
 }
