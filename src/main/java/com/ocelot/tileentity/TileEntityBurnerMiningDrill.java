@@ -265,20 +265,6 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
     }
 
     @Override
-    protected void readUpdateTag(NBTTagCompound nbt)
-    {
-        super.readUpdateTag(nbt);
-        this.running = nbt.getBoolean("running");
-    }
-
-    @Override
-    protected void writeUpdateTag(NBTTagCompound nbt)
-    {
-        super.writeUpdateTag(nbt);
-        nbt.setBoolean("running", this.running);
-    }
-
-    @Override
     public int getEnergyConsumption()
     {
         return 150000;
@@ -358,11 +344,6 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
                 this.coveredOres.remove(part);
             }
         }
-    }
-
-    public boolean isRunning()
-    {
-        return this.running;
     }
 
     @Override
