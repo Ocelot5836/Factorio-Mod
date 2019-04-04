@@ -21,7 +21,8 @@ public class NetworkHandler
 
     public static void init()
     {
-        registerMessage(MessageOpenGui.class, MessageOpenGui::encode, MessageOpenGui::decode, MessageOpenGuiHandler::handle);
+        registerMessage(MessageOpenGui.class, MessageOpenGui::encode, MessageOpenGui::decode, ClientMessageHandlers::handle);
+        registerMessage(MessagePlayBurnerMiningDrillSound.class, MessagePlayBurnerMiningDrillSound::encode, MessagePlayBurnerMiningDrillSound::decode, ClientMessageHandlers::handle);
     }
 
     private static <MSG> void registerMessage(Class<MSG> messageType, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> messageConsumer)

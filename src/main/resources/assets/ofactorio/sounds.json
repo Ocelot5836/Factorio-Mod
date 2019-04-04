@@ -1,0 +1,7 @@
+{
+	"block.burner_mining_drill.mine": {
+		"category": "block",
+		"subtitle": "block.burner_mining_drill.mine.subtitle",
+		"sounds": [ "ofactorio:block/burner_mining_drill/mine" ]
+	}
+}

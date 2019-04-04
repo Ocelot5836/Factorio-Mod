@@ -10,12 +10,16 @@ import com.ocelot.FactorioMod;
 import com.ocelot.blocks.BlockBurnerMiningDrill;
 import com.ocelot.blocks.BlockBurnerMiningDrill.MinerDrillPart;
 import com.ocelot.init.ModTileEntities;
+import com.ocelot.network.MessagePlayBurnerMiningDrillSound;
+import com.ocelot.network.NetworkHandler;
 import com.ocelot.recipe.FactorioFuels;
 import com.ocelot.util.EnumOreType;
 import com.ocelot.util.ISimpleInventory;
 import com.ocelot.util.InventoryUtils;
 import com.ocelot.util.MiningDrill;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,6 +32,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -40,6 +45,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
     private int miningProgress;
     private ITextComponent customName;
     private Map<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop> coveredOres;
+    private boolean running;
 
     private Map<Item, Float> joulesMap;
 
@@ -60,6 +66,8 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
         this.miningProgress = 0;
         this.customName = null;
         this.coveredOres = new ConcurrentHashMap<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop>();
+        this.running = false;
+
         this.joulesMap = FactorioFuels.getJouleAmounts();
     }
 
@@ -110,6 +118,8 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
     {
         if (this.hasWorld() && !this.getWorld().isRemote())
         {
+            boolean canRun = false;
+            
             if (!this.coveredOres.isEmpty())
             {
                 if (this.joules < this.getEnergyConsumption() / 20)
@@ -124,6 +134,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
                             this.maxJoules = this.joules;
                             this.markDirty();
                             this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+                            canRun = true;
                         }
                     }
                 }
@@ -154,6 +165,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
                             this.joules -= this.getEnergyConsumption() / 20;
                             this.markDirty();
                             this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+                            canRun = true;
                         }
                         else if (this.canOutput())
                         {
@@ -165,11 +177,29 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 
                             this.output(outcrop.getOre(), 1);
                             this.miningProgress = 0;
+                            this.markDirty();
+                            this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+                        }
+                        else
+                        {
+                            canRun = false;
                         }
                     }
                     else
                     {
                         this.coveredOres.remove(part);
+                    }
+                }
+            }
+            
+            if (this.running != canRun)
+            {
+                this.running = canRun;
+                for (EntityPlayer player : this.getWorld().playerEntities)
+                {
+                    if (player instanceof EntityPlayerMP)
+                    {
+                        NetworkHandler.INSTANCE.sendTo(new MessagePlayBurnerMiningDrillSound(this.pos, canRun), ((EntityPlayerMP) player).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
                     }
                 }
             }
@@ -235,6 +265,20 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
     }
 
     @Override
+    protected void readUpdateTag(NBTTagCompound nbt)
+    {
+        super.readUpdateTag(nbt);
+        this.running = nbt.getBoolean("running");
+    }
+
+    @Override
+    protected void writeUpdateTag(NBTTagCompound nbt)
+    {
+        super.writeUpdateTag(nbt);
+        nbt.setBoolean("running", this.running);
+    }
+
+    @Override
     public int getEnergyConsumption()
     {
         return 150000;
@@ -279,7 +323,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
     {
         return joules;
     }
-    
+
     public float getMaxJoules()
     {
         return maxJoules;
@@ -314,6 +358,11 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
                 this.coveredOres.remove(part);
             }
         }
+    }
+
+    public boolean isRunning()
+    {
+        return this.running;
     }
 
     @Override
