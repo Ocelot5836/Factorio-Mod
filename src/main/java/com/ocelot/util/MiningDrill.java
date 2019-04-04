@@ -9,23 +9,23 @@ import com.ocelot.blocks.BlockOreOutcrop;
  */
 public interface MiningDrill
 {
-	/**
-	 * @return The amount of watts consumed
-	 */
-	int getEnergyConsumption();
+    /**
+     * @return The amount of watts consumed
+     */
+    int getEnergyConsumption();
 
-	/**
-	 * @return The amount of time it takes to mine a single resource
-	 */
-	float getMiningTime();
+    /**
+     * @return The amount of time it takes to mine a single resource
+     */
+    float getMiningTime();
 
-	/**
-	 * @return The speed at which resources are mined
-	 */
-	float getMiningSpeed();
+    /**
+     * @return The speed at which resources are mined
+     */
+    float getMiningSpeed();
 
-	/**
-	 * @return The amount of pollution being currently generated per second
-	 */
-	int getPollution();
+    /**
+     * @return The amount of pollution being currently generated per second
+     */
+    int getPollution();
 }

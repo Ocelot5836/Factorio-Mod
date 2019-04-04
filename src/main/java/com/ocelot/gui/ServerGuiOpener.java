@@ -15,37 +15,37 @@ import net.minecraftforge.fml.network.NetworkDirection;
 
 public class ServerGuiOpener implements GuiOpener
 {
-	@Override
-	public void openGui(int guiId, EntityPlayer player, IWorld world, BlockPos pos)
-	{
-		if (!world.isRemote())
-		{
-			Container value = getGuiElement(guiId, player, world, pos);
-			if (value != null)
-			{
-				if (player.openContainer != player.inventoryContainer)
-				{
-					player.closeScreen();
-				}
+    @Override
+    public void openGui(int guiId, EntityPlayer player, IWorld world, BlockPos pos)
+    {
+        if (!world.isRemote())
+        {
+            Container value = getGuiElement(guiId, player, world, pos);
+            if (value != null)
+            {
+                if (player.openContainer != player.inventoryContainer)
+                {
+                    player.closeScreen();
+                }
 
-				player.openContainer = value;
-				if (player instanceof EntityPlayerMP)
-				{
-					EntityPlayerMP playerMP = (EntityPlayerMP) player;
-					playerMP.getNextWindowId();
-					playerMP.openContainer.windowId = playerMP.currentWindowId;
-					NetworkHandler.INSTANCE.sendTo(new MessageOpenGui(playerMP.currentWindowId), playerMP.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
-					value.addListener((EntityPlayerMP) player);
-				}
-			}
-		}
-	}
+                player.openContainer = value;
+                if (player instanceof EntityPlayerMP)
+                {
+                    EntityPlayerMP playerMP = (EntityPlayerMP) player;
+                    playerMP.getNextWindowId();
+                    playerMP.openContainer.windowId = playerMP.currentWindowId;
+                    NetworkHandler.INSTANCE.sendTo(new MessageOpenGui(playerMP.currentWindowId), playerMP.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+                    value.addListener((EntityPlayerMP) player);
+                }
+            }
+        }
+    }
 
-	@Nullable
-	private static Container getGuiElement(int id, EntityPlayer player, IWorld world, BlockPos pos)
-	{
-		@SuppressWarnings("unused")
-		TileEntity te = world.getTileEntity(pos);
-		return null;
-	}
+    @Nullable
+    private static Container getGuiElement(int id, EntityPlayer player, IWorld world, BlockPos pos)
+    {
+        @SuppressWarnings("unused")
+        TileEntity te = world.getTileEntity(pos);
+        return null;
+    }
 }

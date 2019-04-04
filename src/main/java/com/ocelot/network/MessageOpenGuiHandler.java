@@ -7,12 +7,12 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MessageOpenGuiHandler
 {
-	public static void handle(MessageOpenGui msg, Supplier<NetworkEvent.Context> ctx)
-	{
-		ctx.get().enqueueWork(() ->
-		{
-			Minecraft.getInstance().player.openContainer.windowId = msg.windowId;
-		});
-		ctx.get().setPacketHandled(true);
-	}
+    public static void handle(MessageOpenGui msg, Supplier<NetworkEvent.Context> ctx)
+    {
+        ctx.get().enqueueWork(() ->
+        {
+            Minecraft.getInstance().player.openContainer.windowId = msg.windowId;
+        });
+        ctx.get().setPacketHandled(true);
+    }
 }

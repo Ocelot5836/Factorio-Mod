@@ -7,8 +7,8 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public class ClientInit
 {
-	public static void init()
-	{
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransportBelt.class, new RenderTileEntityTransportBelt());
-	}
+    public static void init()
+    {
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransportBelt.class, new RenderTileEntityTransportBelt());
+    }
 }
