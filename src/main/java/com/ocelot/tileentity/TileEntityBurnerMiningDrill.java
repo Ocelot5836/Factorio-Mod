@@ -134,14 +134,13 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
                             {
                                 this.inventory.setStackInSlot(0, stack.getContainerItem());
                             }
-                            else if (!stack.isEmpty())
+                            else if (!stack.isEmpty())  
                             {
-                                Item item = stack.getItem();
-                                stack.shrink(1);
+                                this.inventory.extractItem(0, 1, false);
                                 if (stack.isEmpty())
                                 {
-                                    Item item1 = item.getContainerItem();
-                                    this.inventory.setStackInSlot(1, item1 == null ? ItemStack.EMPTY : new ItemStack(item1));
+                                    Item containerItem = stack.getItem().getContainerItem();
+                                    this.inventory.setStackInSlot(0, containerItem == null ? ItemStack.EMPTY : new ItemStack(containerItem));
                                 }
                             }
 
