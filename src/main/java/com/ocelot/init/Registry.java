@@ -2,6 +2,7 @@ package com.ocelot.init;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,5 +28,11 @@ public class Registry
 	{
 		ModSounds.init();
 		registry.getRegistry().registerAll(ModSounds.getSounds());
+	}
+
+	@SubscribeEvent
+	public void registerRecipes(RegistryEvent.Register<TileEntityType<?>> registry)
+	{
+		registry.getRegistry().registerAll(ModTileEntities.getTileEntityTypes());
 	}
 }

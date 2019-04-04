@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import javax.annotation.Nullable;
 
 import com.ocelot.blocks.BlockBurnerMiningDrill;
-import com.ocelot.init.ModBlocks;
+import com.ocelot.init.ModTileEntities;
 import com.ocelot.util.MiningDrill;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,7 +24,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 
 	public TileEntityBurnerMiningDrill()
 	{
-		super(ModBlocks.TILE_ENTITY_BURNER_MINING_DRILL);
+		super(ModTileEntities.TILE_ENTITY_BURNER_MINING_DRILL);
 		this.inventory = new ItemStackHandler(1);
 		this.joules = 0;
 		this.miningProgress = 0;

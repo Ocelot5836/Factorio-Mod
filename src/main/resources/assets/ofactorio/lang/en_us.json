@@ -1,6 +1,8 @@
 {
 	"itemGroup.ofactorio": "Factorio",
 	
+	"item.ofactorio.tooltip.joules": "%sJ",
+	
 	"item.ofactorio.iron_ore": "Iron Ore",
 	"item.ofactorio.iron_plate": "Iron Plate",
 	

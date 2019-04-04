@@ -3,6 +3,7 @@ package com.ocelot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.ocelot.event.ClientEvents;
 import com.ocelot.gui.ClientGuiOpener;
 import com.ocelot.gui.GuiOpener;
 import com.ocelot.gui.ServerGuiOpener;
@@ -10,9 +11,11 @@ import com.ocelot.init.ClientInit;
 import com.ocelot.init.ModBlocks;
 import com.ocelot.init.Registry;
 import com.ocelot.network.NetworkHandler;
+import com.ocelot.recipe.FactorioFuels;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -56,6 +59,7 @@ public class FactorioMod
 	public void setupClient(FMLClientSetupEvent event)
 	{
 		ClientInit.init();
+		MinecraftForge.EVENT_BUS.register(new ClientEvents());
 	}
 
 	public static Logger logger()

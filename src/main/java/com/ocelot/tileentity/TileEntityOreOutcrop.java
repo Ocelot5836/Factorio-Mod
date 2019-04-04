@@ -2,7 +2,7 @@ package com.ocelot.tileentity;
 
 import javax.annotation.Nullable;
 
-import com.ocelot.init.ModBlocks;
+import com.ocelot.init.ModTileEntities;
 import com.ocelot.util.EnumOreType;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +13,7 @@ public class TileEntityOreOutcrop extends ModTileEntity
 
 	public TileEntityOreOutcrop()
 	{
-		super(ModBlocks.TILE_ENTITY_ORE_OUTCROP);
+		super(ModTileEntities.TILE_ENTITY_ORE_OUTCROP);
 		this.outcrop = new OreOutcrop(null, 15);
 	}
 

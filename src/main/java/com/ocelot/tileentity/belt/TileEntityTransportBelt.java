@@ -1,7 +1,7 @@
 package com.ocelot.tileentity.belt;
 
 import com.ocelot.blocks.BlockTransportBelt;
-import com.ocelot.init.ModBlocks;
+import com.ocelot.init.ModTileEntities;
 import com.ocelot.tileentity.ModTileEntity;
 import com.ocelot.util.ISimpleInventory;
 
@@ -20,7 +20,7 @@ public class TileEntityTransportBelt extends ModTileEntity implements ITickable,
 
 	public TileEntityTransportBelt()
 	{
-		super(ModBlocks.TILE_ENTITY_TRANSPORT_BELT);
+		super(ModTileEntities.TILE_ENTITY_TRANSPORT_BELT);
 		this.inventory = new TransportBeltItem[4 * 2];
 		this.clear();
 		this.setItem(0, new TransportBeltItem(new ItemStack(Blocks.DIAMOND_BLOCK)));
