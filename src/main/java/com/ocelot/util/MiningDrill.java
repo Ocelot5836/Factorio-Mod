@@ -10,7 +10,7 @@ import com.ocelot.blocks.BlockOreOutcrop;
 public interface MiningDrill
 {
 	/**
-	 * @return The amount of energy consumed per item mined
+	 * @return The amount of watts consumed
 	 */
 	int getEnergyConsumption();
 

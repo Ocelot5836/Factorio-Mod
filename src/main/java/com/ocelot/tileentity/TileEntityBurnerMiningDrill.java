@@ -18,8 +18,7 @@ import net.minecraftforge.items.ItemStackHandler;
 public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITickable, MiningDrill
 {
 	private ItemStackHandler inventory;
-	private int energy;
-	private int maxEnergy;
+	private int joules;
 	private int miningProgress;
 	private Map<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop> coveredOres;
 
@@ -27,8 +26,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 	{
 		super(ModBlocks.TILE_ENTITY_BURNER_MINING_DRILL);
 		this.inventory = new ItemStackHandler(1);
-		this.energy = 0;
-		this.maxEnergy = 0;
+		this.joules = 0;
 		this.miningProgress = 0;
 		this.coveredOres = new HashMap<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop>();
 	}
@@ -48,8 +46,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 		super.read(nbt);
 
 		this.inventory.deserializeNBT(nbt.getCompound("inventory"));
-		this.energy = nbt.getInt("energy");
-		this.maxEnergy = nbt.getInt("maxEnergy");
+		this.joules = nbt.getInt("energy");
 		this.miningProgress = nbt.getInt("miningProgress");
 
 		if (nbt.contains("coveredOres", Constants.NBT.TAG_COMPOUND))
@@ -71,8 +68,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 		super.write(nbt);
 
 		nbt.setTag("inventory", this.inventory.serializeNBT());
-		nbt.setInt("energy", this.energy);
-		nbt.setInt("maxEnergy", this.maxEnergy);
+		nbt.setInt("energy", this.joules);
 		nbt.setInt("miningProgress", this.miningProgress);
 
 		NBTTagCompound coveredOresNbt = new NBTTagCompound();
@@ -92,7 +88,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 	@Override
 	public int getEnergyConsumption()
 	{
-		return 150;
+		return 150000;
 	}
 
 	@Override
@@ -118,14 +114,9 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 		return inventory;
 	}
 
-	public int getEnergy()
+	public int getJoules()
 	{
-		return energy;
-	}
-
-	public int getMaxEnergy()
-	{
-		return maxEnergy;
+		return joules;
 	}
 
 	public int getMiningProgress()
