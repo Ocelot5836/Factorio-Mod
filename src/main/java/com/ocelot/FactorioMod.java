@@ -38,7 +38,7 @@ public class FactorioMod
 	};
 
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final GuiOpener GUI_OPENER = DistExecutor.runForDist(() -> () -> new ClientGuiOpener(), () -> () -> new ServerGuiOpener());
+	private static final GuiOpener GUI_OPENER = DistExecutor.<GuiOpener>runForDist(() -> () -> new ClientGuiOpener(), () -> () -> new ServerGuiOpener());
 
 	public FactorioMod()
 	{

@@ -26,7 +26,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 	public TileEntityBurnerMiningDrill()
 	{
 		super(ModBlocks.TILE_ENTITY_BURNER_MINING_DRILL);
-		this.inventory = new ItemStackHandler(2);
+		this.inventory = new ItemStackHandler(1);
 		this.energy = 0;
 		this.maxEnergy = 0;
 		this.miningProgress = 0;
