@@ -38,7 +38,7 @@ public class ClientMessageHandlers
             {
                 if (!BURNER_MINING_DRILL_SOUNDS.containsKey(longPos))
                 {
-                    BURNER_MINING_DRILL_SOUNDS.put(longPos, new BurnerMiningDrillSound(ModSounds.BLOCK_BURNER_MINING_DRILL_MINE, SoundCategory.BLOCKS, 1, 1, pos));
+                    BURNER_MINING_DRILL_SOUNDS.put(longPos, new BurnerMiningDrillSound(ModSounds.BLOCK_BURNER_MINING_DRILL_MINE, SoundCategory.BLOCKS, 0.5f, 1.0f, pos));
                 }
                 if (!soundHandler.isPlaying(BURNER_MINING_DRILL_SOUNDS.get(longPos)))
                 {

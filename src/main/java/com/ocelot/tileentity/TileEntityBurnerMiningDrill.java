@@ -118,18 +118,33 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
     {
         if (this.hasWorld() && !this.getWorld().isRemote())
         {
-            boolean canRun = false;
-            
+            boolean canRun = true;
+
             if (!this.coveredOres.isEmpty())
             {
                 if (this.joules < this.getEnergyConsumption() / 20)
                 {
+                    canRun = false;
                     if (this.joulesMap != null)
                     {
                         ItemStack stack = this.inventory.getStackInSlot(0);
                         if (!stack.isEmpty() && this.joulesMap.get(stack.getItem()) > 0)
                         {
-                            this.inventory.extractItem(0, 1, false);
+                            if (stack.hasContainerItem())
+                            {
+                                this.inventory.setStackInSlot(0, stack.getContainerItem());
+                            }
+                            else if (!stack.isEmpty())
+                            {
+                                Item item = stack.getItem();
+                                stack.shrink(1);
+                                if (stack.isEmpty())
+                                {
+                                    Item item1 = item.getContainerItem();
+                                    this.inventory.setStackInSlot(1, item1 == null ? ItemStack.EMPTY : new ItemStack(item1));
+                                }
+                            }
+
                             this.joules = this.joulesMap.get(stack.getItem());
                             this.maxJoules = this.joules;
                             this.markDirty();
@@ -191,7 +206,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
                     }
                 }
             }
-            
+
             if (this.running != canRun)
             {
                 this.running = canRun;
@@ -262,6 +277,19 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
         nbt.setTag("coveredOres", coveredOresNbt);
 
         return nbt;
+    }
+
+    @Override
+    public void remove()
+    {
+        super.remove();
+        for (EntityPlayer player : this.getWorld().playerEntities)
+        {
+            if (player instanceof EntityPlayerMP)
+            {
+                NetworkHandler.INSTANCE.sendTo(new MessagePlayBurnerMiningDrillSound(this.pos, false), ((EntityPlayerMP) player).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+            }
+        }
     }
 
     @Override
