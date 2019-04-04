@@ -1,5 +1,6 @@
-package com.ocelot.gui;
+package com.ocelot.gui.container;
 
+import com.ocelot.gui.container.slot.SlotJouleFuel;
 import com.ocelot.tileentity.TileEntityBurnerMiningDrill;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,9 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 
 public class ContainerBurnerMiningDrill extends Container
 {
@@ -22,9 +20,8 @@ public class ContainerBurnerMiningDrill extends Container
     {
         this.world = world;
         this.pos = pos;
-        IItemHandler handler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseGet(null);
 
-        this.addSlot(new SlotItemHandler(handler, 0, 20, 17));
+        this.addSlot(new SlotJouleFuel(te.getInventory(), 0, 20, 17));
 
         for (int y = 0; y < 3; y++)
         {

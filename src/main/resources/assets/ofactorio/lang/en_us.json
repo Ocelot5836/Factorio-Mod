@@ -4,5 +4,8 @@
 	"item.ofactorio.iron_ore": "Iron Ore",
 	"item.ofactorio.iron_plate": "Iron Plate",
 	
-	"block.ofactorio.yellow_belt": "Transport Belt"
+	"block.ofactorio.yellow_belt": "Transport Belt",
+	"block.ofactorio.burner_mining_drill": "Burner Mining Drill",
+	
+	"container.ofactorio.burner_mining_drill": "Burner Mining Drill"
 }

@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.ocelot.FactorioMod;
 import com.ocelot.tileentity.OreOutcrop;
 import com.ocelot.tileentity.TileEntityBurnerMiningDrill;
 import com.ocelot.tileentity.TileEntityOreOutcrop;
@@ -14,6 +15,7 @@ import com.ocelot.util.BlockFactorioInventory;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
@@ -21,6 +23,7 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -61,6 +64,17 @@ public class BlockBurnerMiningDrill extends ModBlock implements BlockFactorioInv
 			}
 		}
 	}
+
+    @Override
+    public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        BlockPos offsetPos = state.get(PART).offset(pos, state.get(FACING));
+        if(world.getTileEntity(offsetPos) instanceof TileEntityBurnerMiningDrill) {
+            FactorioMod.getGuiOpener().openGui(FactorioMod.GUI_BURNER_MINING_DRILL_ID, player, world, offsetPos);
+            return true;
+        }
+        return false;
+    }
 
 	@Override
 	@Deprecated

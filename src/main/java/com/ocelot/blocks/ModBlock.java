@@ -56,7 +56,7 @@ public class ModBlock extends Block implements IBucketPickupHandler, ILiquidCont
         super(Block.Properties.from(parent));
         this.setRegistryName(new ResourceLocation(FactorioMod.MOD_ID, name));
     }
-
+    
     @Override
     public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack)
     {

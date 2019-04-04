@@ -2,6 +2,9 @@ package com.ocelot.gui;
 
 import javax.annotation.Nullable;
 
+import com.ocelot.FactorioMod;
+import com.ocelot.tileentity.TileEntityBurnerMiningDrill;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,8 +32,9 @@ public class ClientGuiOpener extends ServerGuiOpener
 	@Nullable
 	private static GuiScreen getGuiElement(int id, EntityPlayer player, IWorld world, BlockPos pos)
 	{
-		@SuppressWarnings("unused")
 		TileEntity te = world.getTileEntity(pos);
+		if(id == FactorioMod.GUI_BURNER_MINING_DRILL_ID)
+		    return new GuiBurnerMiningDrill(pos, (TileEntityBurnerMiningDrill) te);
 		return null;
 	}
 }

@@ -26,9 +26,7 @@ public class FactorioMod
 {
     public static final String MOD_ID = "ofactorio";
 
-    public static final int GUI_VENDING_MACHINE_ID = 0;
-    public static final int GUI_VENDING_MACHINE_EDIT_ID = 1;
-    public static final int GUI_VENDING_MACHINE_INTERNAL_ID = 2;
+    public static final int GUI_BURNER_MINING_DRILL_ID = 0;
 
     public static final ItemGroup TAB = new ItemGroup(MOD_ID)
     {

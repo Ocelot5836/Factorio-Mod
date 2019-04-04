@@ -36,6 +36,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 {
     private ItemStackHandler inventory;
     private float joules;
+    private float maxJoules;
     private int miningProgress;
     private ITextComponent customName;
     private Map<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop> coveredOres;
@@ -55,6 +56,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
             }
         };
         this.joules = 0;
+        this.maxJoules = 0;
         this.miningProgress = 0;
         this.customName = null;
         this.coveredOres = new ConcurrentHashMap<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop>();
@@ -119,6 +121,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
                         {
                             this.inventory.extractItem(0, 1, false);
                             this.joules = this.joulesMap.get(stack.getItem());
+                            this.maxJoules = this.joules;
                             this.markDirty();
                             this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
                         }
@@ -180,6 +183,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 
         this.inventory.deserializeNBT(nbt.getCompound("inventory"));
         this.joules = nbt.getFloat("energy");
+        this.maxJoules = nbt.getFloat("maxEnergy");
         this.miningProgress = nbt.getInt("miningProgress");
 
         if (nbt.contains("CustomName", Constants.NBT.TAG_STRING))
@@ -207,6 +211,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
 
         nbt.setTag("inventory", this.inventory.serializeNBT());
         nbt.setFloat("energy", this.joules);
+        nbt.setFloat("maxEnergy", this.maxJoules);
         nbt.setInt("miningProgress", this.miningProgress);
 
         ITextComponent customName = this.getCustomName();
@@ -273,6 +278,11 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
     public float getJoules()
     {
         return joules;
+    }
+    
+    public float getMaxJoules()
+    {
+        return maxJoules;
     }
 
     public int getMiningProgress()
