@@ -35,7 +35,7 @@ public class FactorioFuels
 		setJoules(jouleAmounts, ItemTags.LOGS, 750000);// 750,000J
 		setJoules(jouleAmounts, ItemTags.PLANKS, 750000);// 750,000J
 		setJoules(jouleAmounts, ItemTags.WOODEN_STAIRS, 750000);// 750,000J
-		setJoules(jouleAmounts, ItemTags.WOODEN_SLABS, 150);// 375,000J
+		setJoules(jouleAmounts, ItemTags.WOODEN_SLABS, 375000);// 375,000J
 		setJoules(jouleAmounts, ItemTags.WOODEN_TRAPDOORS, 750000);// 750,000J
 		setJoules(jouleAmounts, ItemTags.WOODEN_PRESSURE_PLATES, 750000);// 750,000J
 		setJoules(jouleAmounts, Blocks.OAK_FENCE, 750000);// 750,000J
