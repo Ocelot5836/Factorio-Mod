@@ -3,9 +3,13 @@
 	
 	"item.ofactorio.iron_ore": "Iron Ore",
 	"item.ofactorio.iron_plate": "Iron Plate",
+	"item.ofactorio.copper_ore": "Copper Ore",
+	"item.ofactorio.copper_plate": "Copper Plate",
+	
+	"block.ofactorio.iron_ore_outcrop": "Iron Ore Outcrop",
+	"block.ofactorio.copper_ore_outcrop": "Copper Ore Outcrop",
 	
 	"block.ofactorio.yellow_belt": "Transport Belt",
 	"block.ofactorio.burner_mining_drill": "Burner Mining Drill",
-	
-	"container.ofactorio.burner_mining_drill": "Burner Mining Drill"
+	"block.ofactorio.stone_furnace": "Stone Furnace"
 }

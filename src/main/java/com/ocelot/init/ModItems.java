@@ -14,17 +14,23 @@ public class ModItems
 
     public static final Item IRON_ORE;
     public static final Item IRON_PLATE;
+    public static final Item COPPER_ORE;
+    public static final Item COPPER_PLATE;
 
     static
     {
         IRON_ORE = new ModItem("iron_ore", new Item.Properties().group(FactorioMod.TAB));
         IRON_PLATE = new ModItem("iron_plate", new Item.Properties().group(FactorioMod.TAB));
+        COPPER_ORE = new ModItem("copper_ore", new Item.Properties().group(FactorioMod.TAB));
+        COPPER_PLATE = new ModItem("copper_plate", new Item.Properties().group(FactorioMod.TAB));
     }
 
     protected static void init()
     {
         registerItem(IRON_ORE);
         registerItem(IRON_PLATE);
+        registerItem(COPPER_ORE);
+        registerItem(COPPER_PLATE);
     }
 
     public static void registerItem(Item item)

@@ -20,6 +20,7 @@ public class ModBlocks
     private static final List<Block> BLOCKS = Lists.<Block>newArrayList();
 
     public static final Block IRON_ORE_OUTCROP;
+    public static final Block COPPER_ORE_OUTCROP;
 
     public static final Block YELLOW_BELT;
     public static final BlockFactorioMachine BURNER_MINING_DRILL;
@@ -28,6 +29,7 @@ public class ModBlocks
     static
     {
         IRON_ORE_OUTCROP = new BlockOreOutcrop(EnumOreType.IRON);
+        COPPER_ORE_OUTCROP = new BlockOreOutcrop(EnumOreType.COPPER);
 
         YELLOW_BELT = new BlockTransportBelt("yellow_belt", BlockTransportBelt.Type.YELLOW);
         BURNER_MINING_DRILL = new BlockBurnerMiningDrill("burner_mining_drill");
@@ -37,6 +39,7 @@ public class ModBlocks
     protected static void init()
     {
         registerBlock(IRON_ORE_OUTCROP, new Item.Properties().group(FactorioMod.TAB));
+        registerBlock(COPPER_ORE_OUTCROP, new Item.Properties().group(FactorioMod.TAB));
 
         registerBlock(YELLOW_BELT, new Item.Properties().group(FactorioMod.TAB));
         registerBlock(BURNER_MINING_DRILL, new ItemMiningDrill(BURNER_MINING_DRILL));
