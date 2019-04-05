@@ -1,6 +1,8 @@
 {
 	"itemGroup.ofactorio": "Factorio",
 	
+	"item.ofactorio.tooltip.fuel_value": "Fuel Value: %s",
+	
 	"item.ofactorio.iron_ore": "Iron Ore",
 	"item.ofactorio.iron_plate": "Iron Plate",
 	"item.ofactorio.copper_ore": "Copper Ore",
