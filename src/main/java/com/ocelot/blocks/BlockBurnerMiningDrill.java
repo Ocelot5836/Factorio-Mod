@@ -8,12 +8,10 @@ import com.ocelot.blocks.part.MachinePart222;
 import com.ocelot.tileentity.OreOutcrop;
 import com.ocelot.tileentity.TileEntityBurnerMiningDrill;
 import com.ocelot.tileentity.TileEntityOreOutcrop;
-import com.ocelot.util.BlockFactorioInventory;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -23,12 +21,24 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-public class BlockBurnerMiningDrill extends BlockFactorioMachine implements BlockFactorioInventory
+public class BlockBurnerMiningDrill extends BlockFactorioMachine
 {
     public BlockBurnerMiningDrill(String name)
     {
         super(name, Blocks.IRON_BLOCK);
         this.setDefaultState(this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH).with(PART222, MachinePart222.BOTTOM_RIGHT_DOWN));
+    }
+
+    @Override
+    public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        BlockPos offsetPos = state.get(this.getPropertyPart()).offset(pos, state.get(FACING));
+        if (world.getTileEntity(offsetPos) instanceof TileEntityBurnerMiningDrill)
+        {
+            FactorioMod.getGuiOpener().openGui(FactorioMod.GUI_BURNER_MINING_DRILL_ID, player, world, offsetPos);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -40,7 +50,7 @@ public class BlockBurnerMiningDrill extends BlockFactorioMachine implements Bloc
         if (state == null)
             state = world.getBlockState(pos);
 
-        if (state.getBlock() instanceof BlockBurnerMiningDrill)
+        if (state.getBlock() == this)
         {
             world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
 
@@ -61,18 +71,6 @@ public class BlockBurnerMiningDrill extends BlockFactorioMachine implements Bloc
     }
 
     @Override
-    public boolean onBlockActivated(IBlockState state, World world, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-        BlockPos offsetPos = state.get(this.getPropertyPart()).offset(pos, state.get(FACING));
-        if (world.getTileEntity(offsetPos) instanceof TileEntityBurnerMiningDrill)
-        {
-            FactorioMod.getGuiOpener().openGui(FactorioMod.GUI_BURNER_MINING_DRILL_ID, player, world, offsetPos);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public boolean hasTileEntity(IBlockState state)
     {
         return state.get(this.getPropertyPart()).isBase();
@@ -82,18 +80,6 @@ public class BlockBurnerMiningDrill extends BlockFactorioMachine implements Bloc
     public TileEntity createTileEntity(IBlockState state, IBlockReader world)
     {
         return new TileEntityBurnerMiningDrill();
-    }
-
-    @Override
-    public boolean canReceive(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory)
-    {
-        return false;
-    }
-
-    @Override
-    public ItemStack receive(ItemStack stack, IWorld world, BlockPos pos, EnumFacing face, BlockFactorioInventory otherInventory)
-    {
-        return stack;
     }
 
     @Override
