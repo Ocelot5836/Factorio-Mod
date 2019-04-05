@@ -2,7 +2,7 @@ package com.ocelot.blocks;
 
 import javax.annotation.Nullable;
 
-import com.ocelot.items.ItemBurnerMiningDrill;
+import com.ocelot.items.ItemMiningDrill;
 import com.ocelot.tileentity.OreOutcrop;
 import com.ocelot.tileentity.TileEntityOreOutcrop;
 import com.ocelot.util.EnumOreType;
@@ -86,7 +86,7 @@ public class BlockOreOutcrop extends ModBlock
 	@Override
 	public boolean isReplaceable(IBlockState state, BlockItemUseContext useContext)
 	{
-		return useContext.getItem().getItem() instanceof ItemBurnerMiningDrill;
+		return useContext.getItem().getItem() instanceof ItemMiningDrill;
 	}
 
 	@Override

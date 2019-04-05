@@ -1,8 +1,9 @@
 package com.ocelot.gui;
 
 import com.ocelot.FactorioMod;
-import com.ocelot.blocks.BlockBurnerMiningDrill.MinerDrillPart;
+import com.ocelot.blocks.part.MachinePart222;
 import com.ocelot.gui.container.ContainerBurnerMiningDrill;
+import com.ocelot.init.ModBlocks;
 import com.ocelot.tileentity.OreOutcrop;
 import com.ocelot.tileentity.TileEntityBurnerMiningDrill;
 import com.ocelot.util.EnergyUtils;
@@ -11,6 +12,7 @@ import com.ocelot.util.EnumOreType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -54,7 +56,7 @@ public class GuiBurnerMiningDrill extends GuiContainer
 
         if (!this.outcropCache.isEmpty() && mouseX - this.guiLeft > 18 && mouseX - this.guiLeft <= 18 + 112 && mouseY - this.guiTop > 43 && mouseY - this.guiTop <= 43 + 4)
         {
-            this.drawHoveringText(Integer.toString((int)((double) this.te.getMiningProgress() / (double) (this.te.getMaxMiningProgress() * 20.0) * 100.0)) + "%", mouseX, mouseY);
+            this.drawHoveringText(Integer.toString((int) ((double) this.te.getMiningProgress() / (double) this.te.getMaxMiningProgress() * 100.0)) + "%", mouseX, mouseY);
         }
     }
 
@@ -68,17 +70,17 @@ public class GuiBurnerMiningDrill extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        this.fontRenderer.drawString(this.te.getDisplayName().getFormattedText(), 8.0F, 6.0F, 4210752);
+        this.fontRenderer.drawString(I18n.format(ModBlocks.BURNER_MINING_DRILL.getTranslationKey()), 8.0F, 6.0F, 4210752);
         this.fontRenderer.drawString(this.mc.player.inventory.getDisplayName().getFormattedText(), 8.0F, (float) (this.ySize - 96 + 2), 4210752);
 
         this.mc.getTextureManager().bindTexture(TEXTURE);
         drawScaledCustomSizeModalRect(40, 23, 176, 0, 1, 2, (int) ((double) this.te.getJoules() / (double) (this.te.getMaxJoules()) * 90.0), 2, 256, 256);
-        drawScaledCustomSizeModalRect(20, 45, 176, 0, 1, 2, (int) ((double) this.te.getMiningProgress() / (double) (this.te.getMaxMiningProgress() * 20.0) * 110.0), 2, 256, 256);
+        drawScaledCustomSizeModalRect(20, 45, 176, 0, 1, 2, (int) ((double) this.te.getMiningProgress() / (double) this.te.getMaxMiningProgress() * 110.0), 2, 256, 256);
 
         EnumOreType ore = null;
-        for (int i = 0; i < MinerDrillPart.values().length; i++)
+        for (int i = 0; i < MachinePart222.values().length; i++)
         {
-            MinerDrillPart part = MinerDrillPart.values()[MinerDrillPart.values().length - i - 1];
+            MachinePart222 part = MachinePart222.values()[MachinePart222.values().length - i - 1];
             OreOutcrop outcrop = this.te.getOutcrop(part);
             if (outcrop != null && outcrop.getOre() != null)
             {

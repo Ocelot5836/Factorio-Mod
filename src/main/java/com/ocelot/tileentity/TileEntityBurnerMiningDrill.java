@@ -6,9 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nullable;
 
-import com.ocelot.FactorioMod;
 import com.ocelot.blocks.BlockBurnerMiningDrill;
-import com.ocelot.blocks.BlockBurnerMiningDrill.MinerDrillPart;
+import com.ocelot.blocks.part.MachinePart222;
 import com.ocelot.init.ModTileEntities;
 import com.ocelot.network.MessagePlayBurnerMiningDrillSound;
 import com.ocelot.network.NetworkHandler;
@@ -25,11 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.INameable;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -37,14 +32,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITickable, MiningDrill, ISimpleInventory, INameable
+public class TileEntityBurnerMiningDrill extends ModTileEntity implements MiningDrill<MachinePart222>, ISimpleInventory
 {
     private ItemStackHandler inventory;
     private float joules;
     private float maxJoules;
     private int miningProgress;
-    private ITextComponent customName;
-    private Map<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop> coveredOres;
+    private Map<MachinePart222, OreOutcrop> coveredOres;
     private boolean running;
 
     private Map<Item, Float> joulesMap;
@@ -64,8 +58,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
         this.joules = 0;
         this.maxJoules = 0;
         this.miningProgress = 0;
-        this.customName = null;
-        this.coveredOres = new ConcurrentHashMap<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop>();
+        this.coveredOres = new ConcurrentHashMap<MachinePart222, OreOutcrop>();
         this.running = false;
 
         this.joulesMap = FactorioFuels.getJouleAmounts();
@@ -134,7 +127,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
                             {
                                 this.inventory.setStackInSlot(0, stack.getContainerItem());
                             }
-                            else if (!stack.isEmpty())  
+                            else if (!stack.isEmpty())
                             {
                                 this.inventory.extractItem(0, 1, false);
                                 if (stack.isEmpty())
@@ -154,12 +147,12 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
                 }
                 else
                 {
-                    MinerDrillPart part = null;
+                    MachinePart222 part = null;
                     OreOutcrop outcrop = null;
 
                     int index = this.getWorld().rand.nextInt(this.coveredOres.size());
                     int i = 0;
-                    for (MinerDrillPart key : this.coveredOres.keySet())
+                    for (MachinePart222 key : this.coveredOres.keySet())
                     {
                         if (index == i)
                         {
@@ -173,7 +166,7 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
                     EnumOreType ore = outcrop.getOre();
                     if (ore != null && outcrop.getCount() > 0)
                     {
-                        if (this.miningProgress < this.getMaxMiningProgress() * 20)
+                        if (this.miningProgress < this.getMaxMiningProgress())
                         {
                             this.miningProgress++;
                             this.joules -= this.getEnergyConsumption() / 20;
@@ -230,15 +223,10 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
         this.maxJoules = nbt.getFloat("maxEnergy");
         this.miningProgress = nbt.getInt("miningProgress");
 
-        if (nbt.contains("CustomName", Constants.NBT.TAG_STRING))
-        {
-            this.customName = ITextComponent.Serializer.fromJson(nbt.getString("CustomName"));
-        }
-
         if (nbt.contains("coveredOres", Constants.NBT.TAG_COMPOUND))
         {
             NBTTagCompound coveredOresNbt = nbt.getCompound("coveredOres");
-            for (BlockBurnerMiningDrill.MinerDrillPart part : BlockBurnerMiningDrill.MinerDrillPart.values())
+            for (MachinePart222 part : MachinePart222.values())
             {
                 if (part.isBottom() && coveredOresNbt.contains(part.getName(), Constants.NBT.TAG_COMPOUND))
                 {
@@ -258,16 +246,10 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
         nbt.setFloat("maxEnergy", this.maxJoules);
         nbt.setInt("miningProgress", this.miningProgress);
 
-        ITextComponent customName = this.getCustomName();
-        if (customName != null)
-        {
-            nbt.setString("CustomName", ITextComponent.Serializer.toJson(customName));
-        }
-
         NBTTagCompound coveredOresNbt = new NBTTagCompound();
-        for (Entry<BlockBurnerMiningDrill.MinerDrillPart, OreOutcrop> entry : this.coveredOres.entrySet())
+        for (Entry<MachinePart222, OreOutcrop> entry : this.coveredOres.entrySet())
         {
-            BlockBurnerMiningDrill.MinerDrillPart part = entry.getKey();
+            MachinePart222 part = entry.getKey();
             if (part.isBottom())
             {
                 coveredOresNbt.setTag(part.getName(), entry.getValue().serializeNBT());
@@ -316,6 +298,17 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
     }
 
     @Override
+    public boolean isRunning()
+    {
+        return running;
+    }
+
+    public IItemHandler getInventory()
+    {
+        return inventory;
+    }
+
+    @Override
     public int getSlots()
     {
         return this.inventory.getSlots();
@@ -325,11 +318,6 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
     public ItemStack getStackInSlot(int slot)
     {
         return this.inventory.getStackInSlot(slot);
-    }
-
-    public IItemHandler getInventory()
-    {
-        return inventory;
     }
 
     public float getJoules()
@@ -342,23 +330,27 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
         return maxJoules;
     }
 
+    @Override
     public int getMiningProgress()
     {
         return miningProgress;
     }
 
+    @Override
     public int getMaxMiningProgress()
     {
-        return (int) Math.ceil(1f / this.getMiningSpeed());
+        return (int) Math.ceil(1f / this.getMiningSpeed()) * 20;
     }
 
+    @Override
     @Nullable
-    public OreOutcrop getOutcrop(BlockBurnerMiningDrill.MinerDrillPart part)
+    public OreOutcrop getOutcrop(MachinePart222 part)
     {
         return part.isBottom() ? this.coveredOres.get(part) : null;
     }
 
-    public void setOre(BlockBurnerMiningDrill.MinerDrillPart part, @Nullable OreOutcrop ore)
+    @Override
+    public void setOutcrop(MachinePart222 part, @Nullable OreOutcrop ore)
     {
         if (part.isBottom())
         {
@@ -371,30 +363,5 @@ public class TileEntityBurnerMiningDrill extends ModTileEntity implements ITicka
                 this.coveredOres.remove(part);
             }
         }
-    }
-
-    @Override
-    public ITextComponent getName()
-    {
-        ITextComponent itextcomponent = this.getCustomName();
-        return (ITextComponent) (itextcomponent != null ? itextcomponent : new TextComponentTranslation("container." + FactorioMod.MOD_ID + ".burner_mining_drill"));
-    }
-
-    @Override
-    public boolean hasCustomName()
-    {
-        return this.customName != null;
-    }
-
-    @Override
-    @Nullable
-    public ITextComponent getCustomName()
-    {
-        return this.customName;
-    }
-
-    public void setCustomName(@Nullable ITextComponent customName)
-    {
-        this.customName = customName;
     }
 }

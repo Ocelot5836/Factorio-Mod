@@ -7,9 +7,10 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
 import com.ocelot.FactorioMod;
 import com.ocelot.blocks.BlockBurnerMiningDrill;
+import com.ocelot.blocks.BlockFactorioMachine;
 import com.ocelot.blocks.BlockOreOutcrop;
 import com.ocelot.blocks.BlockTransportBelt;
-import com.ocelot.items.ItemBurnerMiningDrill;
+import com.ocelot.items.ItemMiningDrill;
 import com.ocelot.items.ModItemBlock;
 import com.ocelot.util.EnumOreType;
 
@@ -23,7 +24,7 @@ public class ModBlocks
     public static final Block IRON_ORE_OUTCROP;
 
     public static final Block YELLOW_BELT;
-    public static final Block BURNER_MINING_DRILL;
+    public static final BlockFactorioMachine BURNER_MINING_DRILL;
 
     static
     {
@@ -38,7 +39,7 @@ public class ModBlocks
         registerBlock(IRON_ORE_OUTCROP, new Item.Properties().group(FactorioMod.TAB));
 
         registerBlock(YELLOW_BELT, new Item.Properties().group(FactorioMod.TAB));
-        registerBlock(BURNER_MINING_DRILL, new ItemBurnerMiningDrill());
+        registerBlock(BURNER_MINING_DRILL, new ItemMiningDrill(BURNER_MINING_DRILL));
     }
 
     public static void registerBlock(Block block)
