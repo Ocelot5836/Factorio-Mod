@@ -27,6 +27,9 @@ public class GuiBurnerMiningDrill extends GuiContainer
     private IItemHandler inventory;
     private ItemStack outcropCache;
 
+    private double lastEnergy;
+    private double lastMiningProgress;
+
     public GuiBurnerMiningDrill(BlockPos pos, TileEntityBurnerMiningDrill te)
     {
         super(new ContainerBurnerMiningDrill(Minecraft.getInstance().player, Minecraft.getInstance().world, pos, te));
@@ -35,6 +38,8 @@ public class GuiBurnerMiningDrill extends GuiContainer
         this.outcropCache = ItemStack.EMPTY;
         this.xSize = 176;
         this.ySize = 150;
+        this.lastEnergy = (double) this.te.getJoules() / (double) this.te.getMaxJoules();
+        this.lastMiningProgress = (double) this.te.getMiningProgress() / (double) this.te.getMaxMiningProgress();
     }
 
     @Override
@@ -56,7 +61,7 @@ public class GuiBurnerMiningDrill extends GuiContainer
 
         if (!this.outcropCache.isEmpty() && mouseX - this.guiLeft > 18 && mouseX - this.guiLeft <= 18 + 112 && mouseY - this.guiTop > 43 && mouseY - this.guiTop <= 43 + 4)
         {
-            this.drawHoveringText(Integer.toString((int) ((double) this.te.getMiningProgress() / (double) this.te.getMaxMiningProgress() * 100.0)) + "%", mouseX, mouseY);
+            this.drawHoveringText(Integer.toString((int) ((this.lastMiningProgress + ((double) this.te.getMiningProgress() / (double) this.te.getMaxMiningProgress() - this.lastMiningProgress) * partialTicks) * 100.0)) + "%", mouseX, mouseY);
         }
     }
 
@@ -70,12 +75,21 @@ public class GuiBurnerMiningDrill extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+        float partialTicks = this.mc.getRenderPartialTicks();
+
         this.fontRenderer.drawString(I18n.format(ModBlocks.BURNER_MINING_DRILL.getTranslationKey()), 8.0F, 6.0F, 4210752);
         this.fontRenderer.drawString(this.mc.player.inventory.getDisplayName().getFormattedText(), 8.0F, (float) (this.ySize - 96 + 2), 4210752);
 
         this.mc.getTextureManager().bindTexture(TEXTURE);
-        drawScaledCustomSizeModalRect(40, 23, 176, 0, 1, 2, (int) ((double) this.te.getJoules() / (double) (this.te.getMaxJoules()) * 90.0), 2, 256, 256);
-        drawScaledCustomSizeModalRect(20, 45, 176, 0, 1, 2, (int) ((double) this.te.getMiningProgress() / (double) this.te.getMaxMiningProgress() * 110.0), 2, 256, 256);
+
+        double energy = (double) this.te.getJoules() / (double) this.te.getMaxJoules();
+        double miningProgress = (double) this.te.getMiningProgress() / (double) this.te.getMaxMiningProgress();
+
+        drawScaledCustomSizeModalRect(40, 23, 176, 0, 1, 2, (int) ((this.lastEnergy + (energy - this.lastEnergy) * partialTicks) * 90.0), 2, 256, 256);
+        drawScaledCustomSizeModalRect(20, 45, 176, 0, 1, 2, (int) ((this.lastMiningProgress + (miningProgress - this.lastMiningProgress) * partialTicks) * 110.0), 2, 256, 256);
+        
+        this.lastEnergy = energy;
+        this.lastMiningProgress = miningProgress;
 
         EnumOreType ore = null;
         for (int i = 0; i < MachinePart222.values().length; i++)
