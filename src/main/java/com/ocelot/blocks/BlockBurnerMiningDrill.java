@@ -43,7 +43,7 @@ public class BlockBurnerMiningDrill extends BlockFactorioMachine
 
     @Override
     @Nullable
-    protected void breakPart(@Nullable IBlockState state, IWorld world, BlockPos pos, BlockPos originPos)
+    public void breakPart(@Nullable IBlockState state, IWorld world, BlockPos pos, BlockPos originPos)
     {
         TileEntityBurnerMiningDrill burnerMiningDrill = world.getTileEntity(originPos) instanceof TileEntityBurnerMiningDrill ? (TileEntityBurnerMiningDrill) world.getTileEntity(originPos) : null;
 
@@ -68,12 +68,6 @@ public class BlockBurnerMiningDrill extends BlockFactorioMachine
                 }
             }
         }
-    }
-
-    @Override
-    public boolean hasTileEntity(IBlockState state)
-    {
-        return state.get(this.getPropertyPart()).isBase();
     }
 
     @Override

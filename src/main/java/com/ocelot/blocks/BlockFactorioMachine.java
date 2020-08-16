@@ -10,8 +10,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
@@ -70,12 +72,21 @@ public abstract class BlockFactorioMachine extends ModBlock
     }
 
     @Override
+    public boolean hasTileEntity(IBlockState state)
+    {
+        return state.get(this.getPropertyPart()).isBase();
+    }
+
+    @Override
     protected void fillStateContainer(Builder<Block, IBlockState> builder)
     {
         builder.add(FACING, this.getPropertyPart());
     }
 
-    protected abstract void breakPart(@Nullable IBlockState state, IWorld world, BlockPos pos, BlockPos originPos);
+    @Override
+    public abstract TileEntity createTileEntity(IBlockState state, IBlockReader world);
+
+    public abstract void breakPart(@Nullable IBlockState state, IWorld world, BlockPos pos, BlockPos originPos);
 
     public abstract IBlockState setPart(IBlockState state, MachinePart part, IWorld world, BlockPos pos);
 

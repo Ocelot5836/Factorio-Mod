@@ -4,12 +4,15 @@ import javax.annotation.Nullable;
 
 import com.ocelot.blocks.part.MachinePart;
 import com.ocelot.blocks.part.MachinePart222;
+import com.ocelot.tileentity.TileEntityBurnerMiningDrill;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.state.EnumProperty;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 
 public class BlockStoneFurnace extends BlockFactorioMachine
@@ -34,7 +37,7 @@ public class BlockStoneFurnace extends BlockFactorioMachine
 
     @Override
     @Nullable
-    protected void breakPart(@Nullable IBlockState state, IWorld world, BlockPos pos, BlockPos originPos)
+    public void breakPart(@Nullable IBlockState state, IWorld world, BlockPos pos, BlockPos originPos)
     {
         if (state == null)
             state = world.getBlockState(pos);
@@ -45,17 +48,11 @@ public class BlockStoneFurnace extends BlockFactorioMachine
         }
     }
 
-    // @Override
-    // public boolean hasTileEntity(IBlockState state)
-    // {
-    // return state.get(this.getPropertyPart()).isBase();
-    // }
-    //
-    // @Override
-    // public TileEntity createTileEntity(IBlockState state, IBlockReader world)
-    // {
-    // return new TileEntityBurnerMiningDrill();
-    // }
+    @Override
+    public TileEntity createTileEntity(IBlockState state, IBlockReader world)
+    {
+        return new TileEntityBurnerMiningDrill();
+    }
 
     @Override
     public MachinePart[] getParts()

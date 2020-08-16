@@ -10,7 +10,7 @@ import net.minecraft.world.IWorld;
  * 
  * @author Ocelot5836
  */
-public interface BlockFactorioInventory
+public interface BlockFactorioInventory extends ISimpleInventory
 {
     /**
      * Checks to see if the specified stack can be inserted into this inventory via the provided face.

@@ -16,7 +16,7 @@ import net.minecraft.util.ITickable;
 public interface MiningDrill<T extends MachinePart> extends ITickable
 {
     /**
-     * @return The amount of watts consumed
+     * @return The amount of watts consumed (kj per second)
      */
     int getEnergyConsumption();
 

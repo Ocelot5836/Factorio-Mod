@@ -34,6 +34,7 @@ public class ClientMessageHandlers
             BlockPos pos = msg.pos;
             long longPos = pos.toLong();
 
+            System.out.println(msg.running);
             if (msg.running)
             {
                 if (!BURNER_MINING_DRILL_SOUNDS.containsKey(longPos))
@@ -42,6 +43,7 @@ public class ClientMessageHandlers
                 }
                 if (!soundHandler.isPlaying(BURNER_MINING_DRILL_SOUNDS.get(longPos)))
                 {
+                    System.out.println("s");
                     soundHandler.play(BURNER_MINING_DRILL_SOUNDS.get(longPos));
                 }
             }
